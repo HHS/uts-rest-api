@@ -1,5 +1,5 @@
 ##############################################################################################################################
-# Version 1.0
+# Version 1.0 - 7/28/2015
 # The ticket client has two methods:
 #   getTgt() and getServiceTicket()
 #   run getTgt() to obtain your ticket granting ticket.
