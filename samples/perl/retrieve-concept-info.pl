@@ -51,7 +51,7 @@ sub run_query {
 	#print qq{$uri\n};
 	my $query = $client->GET($uri);
 	my $results = $query->responseCode() eq '200'? $query->responseContent: "Not Found";
-	my $json = format_json($results) if $results ne "Not Found";
+	my $json = format_json($results) unless $results eq "Not Found";
 	return $json unless $results eq "Not Found";
 }
 
