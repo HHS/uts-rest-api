@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 
 ##usage: perl search-terms.pl -u your-umls-username -p your-umls-password
+##If you do not provide the version paramter the script queries the latest avaialble UMLS publication.
 ##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html#sample-output
 
@@ -13,10 +14,11 @@ use JSON;
 use REST::Client;
 use Data::Dumper;
 use Getopt::Std;
-our ($opt_u,$opt_p);
-getopt('up');
+our ($opt_u,$opt_p,$opt_v);
+getopt('upv');
 my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
+my $version = defined $opt_v ? $opt_v : "current";
 
 ##create a ticket granting ticket for the session
 my $ticketClient = new TicketClient(username=>$opt_u,password=>$opt_p,service=>"http://umlsks.nlm.nih.gov",tgt=>"") || die "could not create TicketClient() object";
@@ -31,12 +33,13 @@ open TERMS, "sample-terms.txt" || die "Could not open sample file$!";
   	my $term = $_;
   	chomp($term);
   	my $pageNum = "1";
-  	my $path = "/rest/search/current";
+  	my $path = "/rest/search/".$version;
   	
   	$parameters{string} = $term;
   	##optional parameters to return source-asserted identifiers and filter by source.  You can also use 'sourceConcept' (for SNOMEDCT_US, LNC, NCI,RXNORM) or 'sourceDescriptor' (for MSH,MDR,ICD9CM,ICD10CM,GO)
   	#$parameters{returnIdType} = "code";
   	#$parameters{sabs} = "SNOMEDCT_US,ICD10CM";
+  	#$parameters{returnIdType} = "aui";
   	
   	print qq{Searching term $term\n};
   	

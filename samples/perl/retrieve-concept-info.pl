@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
-##usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password
+##usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password -v version
+##If you do not provide the version paramter the script queries the latest avaialble UMLS publication.
 ##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
-##The full list of fields available for CUI retrieval is at https://documentation.uts.nlm.nih.gov/rest/search/index.html#sample-output
+##The full list of query parameters and fields available for CUI retrieval is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html
 
 use lib ".";
 use strict;
@@ -13,10 +14,11 @@ use JSON;
 use REST::Client;
 use Data::Dumper;
 use Getopt::Std;
-our ($opt_u,$opt_p);
-getopt('up');
+our ($opt_u,$opt_p,$opt_v);
+getopt('upv');
 my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
+my $version = defined $opt_v ? $opt_v : "current";
 ##create a ticket granting ticket for the session
 my $ticketClient = new TicketClient(username=>$opt_u,password=>$opt_p,service=>"http://umlsks.nlm.nih.gov",tgt=>"") || die "could not create TicketClient() object";
 my $tgt = $ticketClient->getTgt();
@@ -29,7 +31,7 @@ open CUIS, "sample-cuis.txt" || die "Could not open sample file$!";
   while(<CUIS>) {
     my $cui = $_;
     chomp($cui);  	
-    my $path = "/rest/content/current/CUI/".$cui;
+    my $path = "/rest/content/".$version."/CUI/".$cui;
     my $json = run_query($path,\%parameters);
     my $ui = $json->{result}{ui};
     my $name = $json->{result}{name} ;

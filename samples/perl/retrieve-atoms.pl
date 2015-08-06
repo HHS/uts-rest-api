@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -c CUI
-##use 'current' as your version paramter to query against the latest UMLS publication.
+##If you do not provide the version paramter the script queries the latest avaialble UMLS publication.
 ##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
 
@@ -19,7 +19,7 @@ our ($opt_u,$opt_p,$opt_v,$opt_c);
 getopt('upvc');
 my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
-my $version = $opt_v || die "please provide a UMLS Version";
+my $version = defined $opt_v ? $opt_v : "current";
 my $cui = $opt_c || die "please provide an identifier";
 
 ##create a ticket granting ticket for the session
@@ -31,7 +31,7 @@ my $client = REST::Client->new();
 my $pageNum = "1";
 my %parameters = ();
 my $obj;
-my $path = "/rest/content/current/CUI/".$cui."/atoms";
+my $path = "/rest/content/".$version."/CUI/".$cui."/atoms";
 my $result;
 
         ## with /atoms you may get more than the default 25 objects per page.  You can either set your paging to higher values or page through results
