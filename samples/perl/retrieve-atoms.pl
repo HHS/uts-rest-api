@@ -2,7 +2,7 @@
 
 ##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -c CUI
 ##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
-##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
+##This file takes a CUI and retrieves atoms according to your query parameters.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
 
 use lib ".";
