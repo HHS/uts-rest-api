@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-##usage: perl search-terms.pl -u your-umls-username -p your-umls-password
+##usage: perl search-terms.pl -u your-umls-username -p your-umls-password -v version
 ##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
 ##This file runs some searches on a list of terms and then prints out some basic information.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/search/index.html
