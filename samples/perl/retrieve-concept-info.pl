@@ -27,10 +27,10 @@ my $client = REST::Client->new();
 open CUIS, "sample-cuis.txt" || die "Could not open sample file$!";
 
   while(<CUIS>) {
-  	my $cui = $_;
-  	chomp($cui);  	
-  	my $path = "/rest/content/current/CUI/".$cui;
-  	my $json = run_query($path,\%parameters);
+    my $cui = $_;
+    chomp($cui);  	
+    my $path = "/rest/content/current/CUI/".$cui;
+    my $json = run_query($path,\%parameters);
     my $ui = $json->{result}{ui};
     my $name = $json->{result}{name} ;
     my @stys = @{ $json->{result}{semanticTypes} };
