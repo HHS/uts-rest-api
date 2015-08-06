@@ -11,7 +11,6 @@ use warnings;
 use URI;
 use Authentication::TicketClient;
 use JSON;
-use JSON::Parse 'valid_json';
 use REST::Client;
 use Data::Dumper;
 use Getopt::Std;
