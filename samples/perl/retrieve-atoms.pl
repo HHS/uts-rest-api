@@ -1,8 +1,9 @@
 #!/usr/bin/perl
 
-##usage: perl search-terms.pl -u your-umls-username -p your-umls-password
+##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -c CUI
+##use 'current' as your version paramter to query against the latest UMLS publication.
 ##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
-##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html#sample-output
+##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
 
 use lib ".";
 use strict;
@@ -39,7 +40,6 @@ my $result;
 	
 	do {
 	
-	 ##Full documentation on query parameters and output is available at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
 	 $parameters{page} = $pageNum;
 	 #$parameters{sabs} = "SNOMEDCT_US,ICD10CM";
 	 $parameters{language} = "ENG";
