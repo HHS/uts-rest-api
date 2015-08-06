@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 ##usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password -v version
-##If you do not provide the version paramter the script queries the latest avaialble UMLS publication.
+##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
 ##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
 ##The full list of query parameters and fields available for CUI retrieval is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html
 
