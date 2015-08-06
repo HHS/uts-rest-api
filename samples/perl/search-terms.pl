@@ -2,8 +2,8 @@
 
 ##usage: perl search-terms.pl -u your-umls-username -p your-umls-password
 ##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
-##This file runs some searches on a list of UMLS CUIs and then prints out some basic information.
-##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html#sample-output
+##This file runs some searches on a list of terms and then prints out some basic information.
+##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/search/index.html
 
 use lib ".";
 use strict;
