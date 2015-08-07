@@ -1,22 +1,28 @@
 package uts.rest.samples.search;
 import uts.rest.samples.util.RestTicketClient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.junit.Test;
+
 import static org.hamcrest.Matchers.*;
+
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.path.json.JsonPath.with;
 
-/*This example uses the rest assured api to run GET calls as well as parse json
+/*This example allows you to search terms in the UMLS
 Examples are at https://github.com/jayway/rest-assured/tree/master/examples/rest-assured-itest-java/src/test/java/com/jayway/restassured/itest/java
 For convenience, google's quick json parser is also included in the pom.xml file:
 https://code.google.com/p/quick-json/
-
-You can run this class as a Junit4 test case - be sure and put each of the 4 arguments as VM arguemnts 
-in your runtime configuration, such as -Dusername=your-umls-username
+You can run this class as a Junit4 test case - be sure and put each of the 4 arguments as VM arguemnts
+The test will fail once the result set reads 'NO RESUTLS'.  Improved paging will take care of this 
+in the near future. 
+in your runtime configuration, such as -Dusername=username -Dpassword=password -Dterm = "diabetic foot"
 
 */
 
@@ -24,6 +30,7 @@ public class SearchTermsTestCase {
 
 	String username = System.getProperty("username"); 
 	String password = System.getProperty("password");
+	//version is not a required argument - if left out you will search against the latest UMLS publication
 	String version = System.getProperty("version");
 	String term = System.getProperty("term");
 	RestTicketClient ticketClient = new RestTicketClient(username,password);
@@ -33,6 +40,8 @@ public class SearchTermsTestCase {
 
 	@Test
 	public void SearchTerm() throws Exception {
+		
+	version = System.getProperty("version") == null ? "current": System.getProperty("version");
 
 		int page = 0;
 		
