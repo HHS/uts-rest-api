@@ -51,7 +51,7 @@ my $result;
 	    
 	    
   	    printf "%s\n","Atom Name: ".$result->{name};
-	    printf "%s %s|%s\n","Term Type: ".$result->{termType}, "(obsolete) - ".$result->{obsolete}, "(suppressible) - ".$result->{suppressible};
+	    printf "%s (%s|%s)\n","Term Type: ".$result->{termType}, "obsolete: ".$result->{obsolete}, "suppressible: ".$result->{suppressible};
 	    printf "%s\n", "Source: ".$result->{rootSource};
 	    printf "%s\n", "AUI: ".$result->{ui},"Term Type:" .$result->{termType};
 	    printf "%s\n", "CUI: ".$result->{memberships}{concept};
