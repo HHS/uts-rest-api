@@ -60,7 +60,7 @@ public class SearchTermsTestCase {
 	       		 .statusCode(200)
 	       		 .body(not(containsString("NO RESULTS")))
 	        	 .when().get("/rest/search/"+version);
-            
+	    	System.out.println("Page "+page);
 	    	results = with(response.getBody().asInputStream()).get("result.results");
 	        
 	    	//everything returned under the /search endpoint is a json object - there are no arrays.
@@ -71,8 +71,9 @@ public class SearchTermsTestCase {
 	    			
 	    			System.out.println(k+": "+ result.get(k));
 	    		}
-	    		
+	    		System.out.println("**");
 	    	}
+	    	System.out.println("----------");
 		}
 	
 	
