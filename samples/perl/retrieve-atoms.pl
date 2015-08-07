@@ -45,8 +45,11 @@ my $result;
 	 ##suppressible atoms are excluded by default
 	 #$parameters{includeSuppressible} = "true";
          $json = run_query($path,\%parameters);
+	 print qq{Page $pageNum Results\n};
 	 
   	    foreach my $result(@{ $json->{result} }) {
+	    
+	    
   	    printf "%s\n","Atom Name: ".$result->{name};
 	    printf "%s %s|%s\n","Term Type: ".$result->{termType}, "(obsolete) - ".$result->{obsolete}, "(suppressible) - ".$result->{suppressible};
 	    printf "%s\n", "Source: ".$result->{rootSource};
@@ -78,7 +81,7 @@ sub run_query {
 	$parameters{ticket} = $ticketClient->getServiceTicket();
 	$uri->path($path);
 	$uri->query_form($parameters);
-	print qq{$uri\n};
+	print qq{$uri\n\n};
 	my $query = $client->GET($uri) || die "Could not execute query$!";
 	my $results = $query->responseCode() eq '200'? $query->responseContent: die "Could not execute query$!";
 	my $json = format_json($results);

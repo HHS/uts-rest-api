@@ -42,17 +42,24 @@ my %parameters = ();
   	do {
   		
   		$parameters{page} = $pageNum;
+                print qq{Page $pageNum Results\n};
   		$json = run_query($path,\%parameters);
   		foreach my $result(@{ $json->{result}{results} }) {
-  		print qq{ $result->{ui}|$result->{uri}|$result->{rootSource}|$result->{name}\n } if $result->{name} ne 'NO RESULTS';
+                  
+  		printf "%s\n","uri: ".$result->{uri} if defined $result->{uri};
+                printf "%s\n","ui: ".$result->{ui} if $result->{ui} ne 'NONE';
+                printf "%s\n","name: ".$result->{name} if $result->{name} ne 'NO RESULTS';
+                printf "%s\n","Source Vocabulary: ".$result->{rootSource} if defined $result->{rootSource};
   			
   		}
+                print qq{----------\n};
   		$pageNum++;
 
   	}
-  	
+
   	##TODO: Add 'next' and 'previous' page URIs to JSON output so we don't have to do this:.
   	while $json->{result}{results}[0]{name} ne 'NO RESULTS';
+
 
 sub format_json {
 	my $json_in = shift;
@@ -68,7 +75,7 @@ sub run_query {
 	$parameters{ticket} = $ticketClient->getServiceTicket();
 	$uri->path($path);
 	$uri->query_form($parameters);
-	print qq{$uri\n};
+	print qq{$uri\n\n};
 	my $query = $client->GET($uri) || die "could not execute query";
 	my $results = $query->responseCode() eq '200'? $query->responseContent: "Not Found";
 	my $json = format_json($results) unless $results eq "Not Found";
