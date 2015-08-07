@@ -39,8 +39,9 @@ public class RetrieveAtomsTestCase {
 			//if you do not specify a source vocabulary, the script assumes you're searching for CUI
 		    String path = "/rest/content/"+version+"/CUI/"+id+"/atoms";
 		    List<HashMap<String,Object>> results = new ArrayList<HashMap<String,Object>>();
-		    int page=0;
-		    while(true) {
+		    int page=1;
+		    do {
+		    System.out.println("Page "+page);
 			RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
 	    	Response response =  given()//.log().all()
 	                .request().with()
@@ -53,7 +54,7 @@ public class RetrieveAtomsTestCase {
 	       		 .statusCode(200)
 	        	 .when().get(path);
 	        	 //response.then().log().all();;
-            System.out.println("Page "+page);
+
 	    	results = with(response.getBody().asInputStream()).get("result");
 	    	
             for(HashMap<String, Object>result:results) {
@@ -62,11 +63,11 @@ public class RetrieveAtomsTestCase {
 	    			
 	    			System.out.println(k+": "+ result.get(k));
 	    		}
-	    		System.out.println("**");
+	    		//System.out.println("**");
 	    	}
            
             System.out.println("----------");
-		 }
+		 }while(results.size() > 0);
 	}
 
 }

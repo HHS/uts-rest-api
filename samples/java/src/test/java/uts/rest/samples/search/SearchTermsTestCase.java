@@ -43,12 +43,13 @@ public class SearchTermsTestCase {
 		
 	version = System.getProperty("version") == null ? "current": System.getProperty("version");
 
-		int page = 0;
+		int page = 1;
 		
-		while(true) {
+		do  {
+			System.out.println("Page "+page);
 			List<HashMap<String,Object>> results = new ArrayList<HashMap<String,Object>>();
 	    	RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
-	    	Response response =  given()
+	    	Response response =  given()//.log().all()
 	                .request().with()
 	                	.param("ticket", ticketClient.getST(tgt))
 	                	.param("string", term)
@@ -60,7 +61,7 @@ public class SearchTermsTestCase {
 	       		 .statusCode(200)
 	       		 .body(not(containsString("NO RESULTS")))
 	        	 .when().get("/rest/search/"+version);
-	    	System.out.println("Page "+page);
+	    	
 	    	results = with(response.getBody().asInputStream()).get("result.results");
 	        
 	    	//everything returned under the /search endpoint is a json object - there are no arrays.
@@ -74,7 +75,7 @@ public class SearchTermsTestCase {
 	    		System.out.println("**");
 	    	}
 	    	System.out.println("----------");
-		}
+		}while(true);
 	
 	
 		
