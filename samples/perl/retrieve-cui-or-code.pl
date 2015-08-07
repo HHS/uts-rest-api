@@ -3,7 +3,7 @@
 ## This file retrieves basic information of a source-asserted identifer or UMLS CUI.
 ## usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password -v version -i identifer -s source vocabulary
 ## If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
-## To query the UMLS, omit the 'source' paramter and use UMLS CUI as your 'identifier' paramter.
+## To query the UMLS, omit the 'source' parameter and use UMLS CUI as your 'identifier' parameter.
 ## The full list of query parameters and fields available for CUI retrieval is at https://documentation.uts.nlm.nih.gov/rest/concept/index.html and
 ## https://documentation.uts.nlm.nih.gov/rest/source-asserted-identifiers/index.html
 
