@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -c CUI
+##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -i identifier
 ##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
 ##This file takes a CUI and retrieves atoms according to your query parameters.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
@@ -14,12 +14,12 @@ use JSON;
 use REST::Client;
 use Data::Dumper;
 use Getopt::Std;
-our ($opt_u,$opt_p,$opt_v,$opt_c);
-getopt('upvc');
+our ($opt_u,$opt_p,$opt_v,$opt_i);
+getopt('upvi');
 my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
 my $version = defined $opt_v ? $opt_v : "current";
-my $cui = $opt_c || die "please provide an identifier";
+my $id = $opt_i || die "please provide an identifier";
 
 ##create a ticket granting ticket for the session
 my $ticketClient = new TicketClient(username=>$opt_u,password=>$opt_p,service=>"http://umlsks.nlm.nih.gov",tgt=>"") || die "could not create TicketClient() object";
@@ -30,7 +30,7 @@ my $client = REST::Client->new();
 my $pageNum = "1";
 my %parameters = ();
 my $obj;
-my $path = "/rest/content/".$version."/CUI/".$cui."/atoms";
+my $path = "/rest/content/".$version."/CUI/".$id."/atoms";
 my $result;
 
         ## with /atoms you may get more than the default 25 objects per page.  You can either set your paging to higher values or page through results
@@ -78,7 +78,7 @@ sub run_query {
 	$parameters{ticket} = $ticketClient->getServiceTicket();
 	$uri->path($path);
 	$uri->query_form($parameters);
-	#print qq{$uri\n};
+	print qq{$uri\n};
 	my $query = $client->GET($uri) || die "Could not execute query$!";
 	my $results = $query->responseCode() eq '200'? $query->responseContent: die "Could not execute query$!";
 	my $json = format_json($results);
