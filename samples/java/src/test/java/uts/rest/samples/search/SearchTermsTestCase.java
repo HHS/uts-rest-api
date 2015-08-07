@@ -19,7 +19,7 @@ import static com.jayway.restassured.path.json.JsonPath.with;
 Examples are at https://github.com/jayway/rest-assured/tree/master/examples/rest-assured-itest-java/src/test/java/com/jayway/restassured/itest/java
 For convenience, google's quick json parser is also included in the pom.xml file:
 https://code.google.com/p/quick-json/
-You can run this class as a Junit4 test case - be sure and put each of the 4 arguments as VM arguemnts
+You can run this class as a Junit4 test case - be sure and put each of the arguments as VM arguments
 The test will fail once the result set reads 'NO RESUTLS'.  Improved paging will take care of this 
 in the near future. 
 in your runtime configuration, such as -Dusername=username -Dpassword=password -Dterm = "diabetic foot"
