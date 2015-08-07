@@ -43,7 +43,7 @@ public class RetrieveCuiOrCodeTestCase {
 			HashMap<String,Object> results = new HashMap<String,Object>();
 	    	
 			RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
-	    	Response response =  given().log().all()
+	    	Response response =  given()//.log().all()
 	                .request().with()
 	                	.param("ticket", ticketClient.getST(tgt))
 	        	 .expect()
