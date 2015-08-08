@@ -3,7 +3,7 @@
 ##usage: perl search-terms.pl -u your-umls-username -p your-umls-password -v version -s string
 ##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
 ##Use quotes if your search string has spaces, for example perl search-terms.pl -u username -p password -s "diabetic foot"
-##This file searches the UMLS against a string you provide and then prints out some basic information.
+##This file searches the UMLS against a string you provide returns CUIs (by default) or source-asserted identifers.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/search/index.html
 
 use lib ".";
@@ -42,6 +42,9 @@ my %parameters = ();
   	do {
   		
   		$parameters{page} = $pageNum;
+                $parameters{inputType} = "code";
+                $parameters{searchType} = "exact";
+                $parameters{sabs} = "FMA";
                 print qq{Page $pageNum Results\n};
   		$json = run_query($path,\%parameters);
   		foreach my $result(@{ $json->{result}{results} }) {
