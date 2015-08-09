@@ -42,9 +42,6 @@ my %parameters = ();
   	do {
   		
   		$parameters{page} = $pageNum;
-                $parameters{inputType} = "code";
-                $parameters{searchType} = "exact";
-                $parameters{sabs} = "FMA";
                 print qq{Page $pageNum Results\n};
   		$json = run_query($path,\%parameters);
   		foreach my $result(@{ $json->{result}{results} }) {
