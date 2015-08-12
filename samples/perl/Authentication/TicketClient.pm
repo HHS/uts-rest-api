@@ -25,8 +25,8 @@ package TicketClient;
 
    sub getTgt {
 
+      my $self = shift;
       my $uri = URI->new("https://utslogin.nlm.nih.gov");
-      my( $self, %parameters ) = @_;
       my $ua = LWP::UserAgent->new;
       $uri->path("/cas/v1/tickets");
       my $query = $ua->post($uri, 
@@ -48,7 +48,7 @@ package TicketClient;
 
         sub getServiceTicket {
         
-        my ($self, %parameters) = @_;
+        my $self = shift;
         my $ua = LWP::UserAgent->new;
         my $uri = URI->new($self->{tgt});
         my $query = $ua->post($uri, 
