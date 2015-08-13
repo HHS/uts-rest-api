@@ -64,7 +64,7 @@ my $result;
 	$pageNum++;
 	}
 	##make sure our result set is not empty
-	while (scalar keys $json->{result} > 0 );
+	while (@{ $json->{result} } > 0 );
   	  	
 
 sub format_json {
