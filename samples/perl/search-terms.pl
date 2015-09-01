@@ -21,6 +21,7 @@ my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
 my $version = defined $opt_v ? $opt_v : "current";
 my $string = $opt_s || die "please provide a query string";
+my $resultCount = 0;
 
 ##create a ticket granting ticket for the session
 my $ticketClient = new TicketClient(username=>$opt_u,password=>$opt_p,service=>"http://umlsks.nlm.nih.gov",tgt=>"") || die "could not create TicketClient() object";
@@ -33,15 +34,17 @@ my %parameters = ();
   	my $pageNum = "1";
   	my $path = "/rest/search/".$version;
   	$parameters{string} = $string;
+        
+        #$parameters{searchType} = "normalizedString";
   	##optional parameters to return source-asserted identifiers and filter by source.  You can also use 'sourceConcept' (for SNOMEDCT_US, LNC, NCI,RXNORM) or 'sourceDescriptor' (for MSH,MDR,ICD9CM,ICD10CM,GO)
   	#$parameters{returnIdType} = "code";
-  	#$parameters{sabs} = "SNOMEDCT_US,ICD10CM";
+  	#$parameters{sabs} = "MSH";
   	
   	print qq{Searching term $string\n};
   	#many term searches will return more than the default page size, which is 25 json objects, so we page through them here.
   	do {
-  		
-  		$parameters{page} = $pageNum;
+  		$parameters{pageNumber} = $pageNum;
+                #$parameters{pageSize} = "10";
                 print qq{Page $pageNum Results\n};
   		$json = run_query($path,\%parameters);
   		foreach my $result(@{ $json->{result}{results} }) {
@@ -50,15 +53,19 @@ my %parameters = ();
                 printf "%s\n","ui: ".$result->{ui} if $result->{ui} ne 'NONE';
                 printf "%s\n","name: ".$result->{name} if $result->{name} ne 'NO RESULTS';
                 printf "%s\n","Source Vocabulary: ".$result->{rootSource} if defined $result->{rootSource};
-  			
+                print qq{\n};
   		}
                 print qq{----------\n};
   		$pageNum++;
+                $resultCount+= scalar(@{ $json->{result}{results} });
 
   	}
 
   	##TODO: Add 'next' and 'previous' page URIs to JSON output so we don't have to do this:.
   	while $json->{result}{results}[0]{name} ne 'NO RESULTS';
+        ### paging is not fully implemented under the /search endpoint, so we have to discount the one 'NO RESULTS' result.
+        $resultCount--;
+        print qq{Found $resultCount results\n};
 
 
 sub format_json {
@@ -76,9 +83,9 @@ sub run_query {
 	$uri->path($path);
 	$uri->query_form($parameters);
 	print qq{$uri\n\n};
-	my $query = $client->GET($uri) || die "could not execute query";
-	my $results = $query->responseCode() eq '200'? $query->responseContent: "Not Found";
-	my $json = format_json($results) unless $results eq "Not Found";
-	return $json unless $results eq "Not Found";
+	my $query = $client->GET($uri) || die "Could not execute query $!\n";
+	my $results = $query->responseCode() eq '200'? $query->responseContent: die "Could not execute query $!\n";
+	my $json = format_json($results);
+	return $json;
 }
 

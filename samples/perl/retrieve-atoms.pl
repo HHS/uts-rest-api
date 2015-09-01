@@ -1,11 +1,14 @@
 #!/usr/bin/perl
 
-##usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version -i identifier
-##If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
-##This file takes a CUI and retrieves atoms according to your query parameters.
-##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
+## Compatible with UTS REST API - version 0.3 alpha
+## usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version (optional) -i identifier -s source_vocabulary(optional)
+## If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
+## This file takes a CUI or a source asserted identifier and retrieves atoms according to your query parameters.
+## Use the -s flag to specify (optionally) a UMLS source vocabulary.  If you omit this flag the script expects that your -i (identifier) argument will be
+## populated with a UMLS CUI.
+## The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/atoms/index.html
 
-use lib ".";
+use lib "lib";
 use strict;
 use warnings;
 use URI;
@@ -14,11 +17,12 @@ use JSON;
 use REST::Client;
 use Data::Dumper;
 use Getopt::Std;
-our ($opt_u,$opt_p,$opt_v,$opt_i);
-getopt('upvi');
+our ($opt_u,$opt_p,$opt_v,$opt_i,$opt_s);
+getopt('upvsi');
 my $username = $opt_u || die "please provide username";
 my $password = $opt_p || die "please provide password";
 my $version = defined $opt_v ? $opt_v : "current";
+my $source = $opt_s;
 my $id = $opt_i || die "please provide an identifier";
 
 ##create a ticket granting ticket for the session
@@ -27,50 +31,61 @@ my $tgt = $ticketClient->getTgt();
 my $uri = new URI("https://uts-ws.nlm.nih.gov");
 my $json;
 my $client = REST::Client->new();
-my $pageNum = "1";
+my $pageNum = 1;
+my $pageCount;
+my $resultCount = 0;
 my %parameters = ();
 my $obj;
-my $path = "/rest/content/".$version."/CUI/".$id."/atoms";
+my $path = defined $source ? "/rest/content/".$version."/source/".$source."/".$id."/atoms": "/rest/content/".$version."/CUI/".$id."/atoms" ;
 my $result;
 
         ## with /atoms you may get more than the default 25 objects per page.  You can either set your paging to higher values or page through results
-	## as in this example.
-	##TODO: Add support for retrieving atoms from source-asserted identifiers.
-	
+	## as in this example.	
 	do {
 	
-	 $parameters{page} = $pageNum;
-	 #$parameters{sabs} = "SNOMEDCT_US,ICD10CM";
+	 $parameters{pageNumber} = $pageNum;
+	 #$parameters{sabs} = "SNOMEDCT_US";
 	 $parameters{language} = "ENG";
-	 ##suppressible atoms are excluded by default
+	 ##suppressible/obsolete atoms are excluded by default
 	 #$parameters{includeSuppressible} = "true";
+	 #$parameters{includeObsolete} = "true";
+	 #$parameters{ttys} = "PT";
          $json = run_query($path,\%parameters);
-	 print qq{Page $pageNum Results\n};
+	 $pageCount = $json->{pageCount};
+	 print qq{On page $pageCount of $pageNum pages\n};
 	 
-  	    foreach my $result(@{ $json->{result} }) {
+  	    foreach my $atom(@{ $json->{result} }) {
 	    
 	    
-  	    printf "%s\n","Atom Name: ".$result->{name};
-	    printf "%s (%s|%s)\n","Term Type: ".$result->{termType}, "obsolete: ".$result->{obsolete}, "suppressible: ".$result->{suppressible};
-	    printf "%s\n", "Source: ".$result->{rootSource};
-	    printf "%s\n", "AUI: ".$result->{ui},"Term Type:" .$result->{termType};
-	    printf "%s\n", "CUI: ".$result->{memberships}{concept};
-	    printf "%s\n", "Code: ".$result->{memberships}{code};
+	    printf "%s\n","AUI: ".$atom->{ui};
+  	    printf "%s\n","Atom Name: ".$atom->{name};
+	    printf "%s\n","Language: ".$atom->{language};
+	    printf "%s\n","Term Type: ".$atom->{termType};
+	    printf "%s\n","Obsolete: ".$atom->{obsolete};
+	    printf "%s\n","Suppressible: ".$atom->{suppressible};
+	    printf "%s\n", "Source: ".$atom->{rootSource};
+	    printf "%s\n", "CUI: " .$atom->{memberships}->{concept};
+	    ## The {memberships} wrapper returned by the /atoms endpoint contains information about to which source concept,code,or source descriptor the atom belongs
 	    ## not all vocabularies have source descriptors or source concepts, so we make sure they exist.
-	    printf "%s\n", "Source Descriptor: ".$result->{memberships}{sourceDescriptor} if defined $result->{memberships}{sourceDescriptor} ;
-	    printf "%s\n", "Source Concept: ".$result->{memberships}{sourceConcept} if defined $result->{memberships}{sourceConcept} ;
-	    print qq{-------\n};
+	    printf "%s\n", "Source Concept: " .$atom->{memberships}->{sourceConcept} if defined $atom->{memberships}->{sourceConcept};
+	    printf "%s\n", "Source Descriptor: " .$atom->{memberships}->{sourceDescriptor} if defined $atom->{memberships}->{sourceDescriptor};
+	    printf "%s\n", "Code: " .$atom->{memberships}->{code} if defined $atom->{memberships}->{code};	     
+	    print qq{\n};
+	    
   	    }
+	print qq{-------\n};
 	$pageNum++;
+	$resultCount += scalar((@{ $json->{result} }));
 	}
-	##make sure our result set is not empty
-	while (@{ $json->{result} } > 0 );
+	##page all the way through until the end.
+	while ($pageNum < ($pageCount + 1));
+	print qq{Found $resultCount total results\n};
   	  	
 
 sub format_json {
 	my $json_in = shift;
 	my $json = JSON->new;
-	my $obj = $json->decode($json_in) if scalar $json_in;
+	my $obj = $json->decode($json_in);
 	#print Dumper(\$obj);
 	return $obj;
 }
