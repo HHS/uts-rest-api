@@ -6,7 +6,7 @@
 ##This file searches the UMLS against a string you provide returns CUIs (by default) or source-asserted identifers.
 ##The full list of fields available for search results is at https://documentation.uts.nlm.nih.gov/rest/search/index.html
 
-use lib ".";
+use lib "lib";
 use strict;
 use warnings;
 use URI;
@@ -34,11 +34,10 @@ my %parameters = ();
   	my $pageNum = "1";
   	my $path = "/rest/search/".$version;
   	$parameters{string} = $string;
-        
-        #$parameters{searchType} = "normalizedString";
+        #$parameters{searchType} = "exact";
   	##optional parameters to return source-asserted identifiers and filter by source.  You can also use 'sourceConcept' (for SNOMEDCT_US, LNC, NCI,RXNORM) or 'sourceDescriptor' (for MSH,MDR,ICD9CM,ICD10CM,GO)
   	#$parameters{returnIdType} = "code";
-  	#$parameters{sabs} = "MSH";
+  	$parameters{sabs} = "SNOMEDCT_US";
   	
   	print qq{Searching term $string\n};
   	#many term searches will return more than the default page size, which is 25 json objects, so we page through them here.
