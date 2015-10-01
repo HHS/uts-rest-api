@@ -32,7 +32,7 @@ while True:
     ##generate a new service ticket for each page if needed
     ticket = AuthClient.getst(tgt)
     pageNumber += 1
-    query = {'string':string,'ticket':ticket, 'pageNumber':pageNumber,'searchType':'normalizedString'}
+    query = {'string':string,'ticket':ticket, 'pageNumber':pageNumber}
     #query['includeObsolete'] = 'true'
     #query['includeSuppressible'] = 'true'
     #query['returnIdType'] = "sourceConcept"
@@ -41,7 +41,8 @@ while True:
     r.encoding = 'utf-8'
     items  = json.loads(r.text)
     jsonData = items["result"]
-    
+    #print (json.dumps(items, indent = 4))
+
     print("Results for page " + str(pageNumber)+"\n")
     
     for result in jsonData["results"]:
