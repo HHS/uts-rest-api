@@ -63,7 +63,7 @@ jsonData = items["result"]
 ### Print out fields ####
 
 classType = jsonData["classType"]
-namevalue = jsonData["name"]
+name = jsonData["name"]
 ui = jsonData["ui"]
 AtomCount = jsonData["atomCount"]
 Definitions = jsonData["definitions"]
@@ -72,7 +72,7 @@ Atoms = jsonData["atoms"]
 ## print out the shared data elements that are common to both the 'Concept' and 'SourceAtomCluster' class
 print ("classType: " + classType)
 print ("ui: " + ui)
-print ("Name: " + namevalue)
+print ("Name: " + name)
 print ("AtomCount: " + str(AtomCount))
 print ("Atoms: " + Atoms)
 
