@@ -1,6 +1,8 @@
 #################################################################################
-#usage of the script
-#usage: retrieve-cui-or-code.py -u USERNAME -p PASSWORD -v VERSION -i IDENTIFIER
+# usage of the script
+# usage: python search-terms.py -u USERNAME -p PASSWORD -v VERSION -s STRING
+# see https://documentation.uts.nlm.nih.gov/rest/search/index.html for full docs
+# on the /search endpoint
 #################################################################################
 
 from Authentication import *

@@ -1,7 +1,9 @@
-#################################################################################
-#usage of the script
-#usage: retrieve-cui-or-code.py -u USERNAME -p PASSWORD -v VERSION -i IDENTIFIER
-#################################################################################
+#################################################################################################
+# usage of the script
+# usage: python retrieve-cui-or-code.py -u USERNAME -p PASSWORD -v VERSION -i IDENTIFIER -s SOURCE
+# If you do not provide the -s parameter, the script assumes you are retrieving information for a
+# known UMLS CUI
+#################################################################################################
 
 from Authentication import *
 import requests

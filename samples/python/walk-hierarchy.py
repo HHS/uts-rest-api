@@ -1,8 +1,9 @@
-#################################################################################
-#usage of the script
-#usage: retrieve-cui-or-code.py -u USERNAME -p PASSWORD -v VERSION -i IDENTIFIER
-#note that computing descendants can take time, especially for terminology concepts with many descendants, closer to the tree-top of a given source vocabulary.
-#################################################################################
+##################################################################################################################################################################
+# usage of the script
+# usage: python walk-hierarchy.py -u USERNAME -p PASSWORD -s SOURCE -i IDENTIFIER
+# note that computing descendants can take time, especially for terminology concepts with many descendants, closer to the tree-top of a given source vocabulary.
+##################################################################################################################################################################
+
 
 from Authentication import *
 import requests
