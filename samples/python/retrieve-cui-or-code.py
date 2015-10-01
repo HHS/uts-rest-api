@@ -9,8 +9,6 @@ from Authentication import *
 import requests
 import json
 import argparse
-import os.path
-import sys
 
 parser = argparse.ArgumentParser(description='process user given parameters')
 parser.add_argument("-u", "--username", required =  True, dest="username", help = "enter username")
