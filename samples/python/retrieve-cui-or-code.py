@@ -29,21 +29,10 @@ source = args.source
 AuthClient = Authentication(username,password)
 
 ###################################
-#get TGT
+#get TGT for our session
 ###################################
 
 tgt = AuthClient.gettgt()
-
-
-#################################
-#get Service ticket
-#################################
-
-#st  = AuthClient.getst(tgt)
-
-#################################
-#get the main uri and path
-###################################
 uri = "https://uts-ws.nlm.nih.gov"
 
 try:
