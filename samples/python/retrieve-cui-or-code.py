@@ -64,14 +64,14 @@ jsonData = items["result"]
 
 classType = jsonData["classType"]
 namevalue = jsonData["name"]
-idvalue = jsonData["ui"]
+ui = jsonData["ui"]
 AtomCount = jsonData["atomCount"]
 Definitions = jsonData["definitions"]
 Atoms = jsonData["atoms"]
 
 ## print out the shared data elements that are common to both the 'Concept' and 'SourceAtomCluster' class
 print ("classType: " + classType)
-print ("ui: " + idvalue)
+print ("ui: " + ui)
 print ("Name: " + namevalue)
 print ("AtomCount: " + str(AtomCount))
 print ("Atoms: " + Atoms)
