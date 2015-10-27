@@ -41,7 +41,7 @@ public class RetrieveAtomsTestCase {
 		    System.out.println("Page "+page);
 		    System.out.println("***********");
 			RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
-	    	Response response =  given().log().all()
+	    	Response response =  given()//.log().all()
 	                .request().with()
 	                //we need a new service ticket for each call since we're requesting multiple pages.
 	                	.param("ticket", ticketClient.getST(tgt))
