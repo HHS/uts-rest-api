@@ -14,6 +14,8 @@ import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import static com.jayway.restassured.RestAssured.given;
+import static org.junit.Assert.*;
+
 
 public class RetrieveAtomsTestCase {
 	
@@ -47,7 +49,7 @@ public class RetrieveAtomsTestCase {
 	                	.param("ticket", ticketClient.getST(tgt))
 	                	//.param("language", "ENG")
 	                	//.param("ttys","PT")
-	                	.param("sabs","SNOMEDCT_US")
+	                	//.param("sabs","SNOMEDCT_US")
 	                	.param("pageNumber",page)
 	        	 .expect()
 	       		 .statusCode(200)
@@ -75,6 +77,7 @@ public class RetrieveAtomsTestCase {
             
             
             page++;
+            assertTrue(atoms.length > 0);
 		 
 		   } while(page <= pageCount );
 	}

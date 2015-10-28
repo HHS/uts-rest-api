@@ -10,8 +10,8 @@ public class AtomLite {
 	private String name;
 	private String termType;
 	private String language;
-	private String suppressible;
-	private String obsolete;
+	private boolean suppressible;
+	private boolean obsolete;
 	private String rootSource;
 	private String concept;
 	private String code;
@@ -59,12 +59,12 @@ public class AtomLite {
 		return this.code;
 	}
 	
-	public String getObsolete() {
+	public boolean getObsolete() {
 		
 		return this.obsolete;
 	}
 	
-    public String getSupressible() {
+    public boolean getSupressible() {
 		
 		return this.suppressible;
 	}
@@ -96,7 +96,7 @@ public class AtomLite {
 	}
 
 	
-	private void setObsolete (String obsolete) {
+	private void setObsolete (boolean obsolete) {
 		
 		this.obsolete = obsolete;
 	}
@@ -106,7 +106,7 @@ public class AtomLite {
 		this.rootSource = rootSource;
 	}
 	
-	private void setSuppressible (String suppressible) {
+	private void setSuppressible (boolean suppressible) {
 		
 		this.suppressible = suppressible;
 	}

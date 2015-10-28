@@ -2,7 +2,7 @@ package uts.rest.samples.classes;
 import com.fasterxml.jackson.annotation.*;
 
 //of course these are customizable
-@JsonIgnoreProperties({"classType","dateAdded","definitionsCount","majorRevisionDate","status","attributeCount","cvMemberCount","suppressible","relationCount"})
+@JsonIgnoreProperties({"classType","dateAdded","majorRevisionDate","status","attributeCount","cvMemberCount","suppressible","relationCount"})
 
 public class ConceptLite {
 	
