@@ -6,7 +6,7 @@ The [UMLS](http://www.nlm.nih.gov/research/umls) is published twice per year (No
 For more information please see the UMLS REST API [technical documentation](https://documentation.uts.nlm.nih.gov/rest/home.html).
 
 ### Java
-To run the Java samples, you can clone this repostiory and then import the pom.xml as an existing maven project.  Each java class can be run as a Junit4 test.
+To run the Java samples, you can clone this repostiory and then import the pom.xml as an existing maven project in Eclipse or other IDE.  Each java class can be run as a Junit4 test.
 
 ###Perl
 To run the perl clients, you'll need to install the following perl modules:
