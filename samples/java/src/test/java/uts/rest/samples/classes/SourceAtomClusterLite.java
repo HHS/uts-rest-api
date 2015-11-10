@@ -2,7 +2,7 @@ package uts.rest.samples.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({"classType","sourceUi","memberships","attributes"})
+@JsonIgnoreProperties({"classType","memberships","attributes"})
 
 public class SourceAtomClusterLite {
 
