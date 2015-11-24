@@ -14,6 +14,7 @@ public class SourceAtomClusterLite {
 	private String rootSource;
 	private int cVMemberCount;
 	private int atomCount;
+	private String concepts;
 	private String atoms;
 	private String parents;
 	private String children;
@@ -48,6 +49,11 @@ public class SourceAtomClusterLite {
 		return this.atoms;
 	}
 	
+	public String getConcepts() {
+		
+		return this.concepts;
+	}
+
 	public String getRootSource() {
 		
 		return this.rootSource;
@@ -112,6 +118,11 @@ public class SourceAtomClusterLite {
 	private void setUi(String ui) {
 		
 		this.ui = ui;
+	}
+	
+	private void setConcepts(String concepts) {
+		
+		this.concepts = concepts;
 	}
 	
 	private void setName(String name){

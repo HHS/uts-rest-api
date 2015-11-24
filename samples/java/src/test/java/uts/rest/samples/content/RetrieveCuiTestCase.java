@@ -28,7 +28,7 @@ public class RetrieveCuiTestCase {
 	String tgt = ticketClient.getTgt();
 
 	@Test
-	public void RetrieveCuiOrCode() throws Exception {
+	public void RetrieveCui() throws Exception {
 		
 		    //if you omit the -Dversion parameter, use 'current' as the default.
 		    version = System.getProperty("version") == null ? "current": System.getProperty("version");

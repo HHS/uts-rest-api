@@ -60,6 +60,7 @@ public class WalkHierarchyTestCase {
 				System.out.println("Ui: "+sourceAtomCluster.getUi());
 				System.out.println("Name: "+sourceAtomCluster.getName());
 				System.out.println("Number of Atoms: "+sourceAtomCluster.getAtomCount());
+				System.out.println("Concepts: "+sourceAtomCluster.getConcepts());
 				System.out.println("Ancestors: "+sourceAtomCluster.getAncestors());
 				System.out.println("Parents: "+ sourceAtomCluster.getParents());
 				System.out.println("Children: "+sourceAtomCluster.getChildren());
