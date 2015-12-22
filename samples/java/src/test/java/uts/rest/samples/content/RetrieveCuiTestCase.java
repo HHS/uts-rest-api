@@ -51,6 +51,7 @@ public class RetrieveCuiTestCase {
 			System.out.println("Atoms: "+conceptLite.getAtoms());
 			System.out.println("Definitions: "+conceptLite.getDefinitions());
 			System.out.println("Relations: "+conceptLite.getRelations());
+			System.out.println("Highest Ranking Atom: "+conceptLite.getDefaultPreferredAtom());
 
 
 	}

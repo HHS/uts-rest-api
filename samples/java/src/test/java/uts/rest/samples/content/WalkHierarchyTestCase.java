@@ -65,6 +65,7 @@ public class WalkHierarchyTestCase {
 				System.out.println("Parents: "+ sourceAtomCluster.getParents());
 				System.out.println("Children: "+sourceAtomCluster.getChildren());
 				System.out.println("Descendants: "+sourceAtomCluster.getDescendants());
+				System.out.println("Highest Ranking Atom: "+sourceAtomCluster.getDefaultPreferredAtom());
 
 			   System.out.println("-------");
 			}

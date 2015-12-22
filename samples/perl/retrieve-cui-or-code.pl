@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-## Compatible with UTS REST API - version 0.3 alpha
+## Compatible with UMLS REST API - version 0.51 Beta
 ## This file retrieves basic information of a source-asserted identifer or UMLS CUI.
 ## usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password -v version -i identifer -s source vocabulary
 ## If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
@@ -37,8 +37,6 @@ my $client = REST::Client->new();
 
     my $path = defined $source ? "/rest/content/".$version."/source/".$source."/".$id : "/rest/content/".$version."/CUI/".$id;
     my $json = run_query($path,\%parameters);
-    
-    ##bless the returned json string into either a ConceptLite class or SourceAtomClusterLite class 
     my $cuiOrCode = $json->{result};
 
     printf "%s\n","ui- ".$cuiOrCode->{ui};
@@ -47,6 +45,8 @@ my $client = REST::Client->new();
     printf "%s\n","Atoms- ".$cuiOrCode->{atoms};
     printf "%s\n","Definitions- ".$cuiOrCode->{definitions};
     printf "%s\n","Relations- ".$cuiOrCode->{relations};
+    printf "%s\n","Highest Ranking Atom- ".$cuiOrCode->{defaultPreferredAtom};
+
     ## Semantic Types are only assigned to UMLS CUIs. There are often more than one semantic type per CUI.
     printf "%s\n","Semantic Type(s)- " .join(",",@{ $cuiOrCode->{semanticTypes} } ) if !defined $source;
     
@@ -55,7 +55,7 @@ my $client = REST::Client->new();
     printf "%s\n","Children- ".$cuiOrCode->{children} if defined $source;
     printf "%s\n","Ancestors- ".$cuiOrCode->{ancestors} if defined $source;
     printf "%s\n","Descendants- ".$cuiOrCode->{descendants} if defined $source;
- 
+    
    
 
 sub format_json {

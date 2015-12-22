@@ -13,6 +13,7 @@ public class ConceptLite {
 	private String atoms;
 	private String relations;
 	private String definitions;
+	private String defaultPreferredAtom;
 	
 	public String getUi() {
 		
@@ -49,6 +50,11 @@ public class ConceptLite {
 		return this.relations;
 	}
 	
+	public String getDefaultPreferredAtom() {
+		
+		return this.defaultPreferredAtom;
+	}
+	
 	private void setAtoms(String atoms) {
 		
 		this.atoms = atoms;
@@ -77,5 +83,11 @@ public class ConceptLite {
 	private void setRelations (String relations) {
 		
 		this.relations = relations;
+	}
+	
+	private void setDefaultPreferredAtom(String defaultPreferredAtom) {
+		
+		this.defaultPreferredAtom = defaultPreferredAtom;
+		
 	}
 }

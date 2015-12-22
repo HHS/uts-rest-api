@@ -16,6 +16,7 @@ parser.add_argument("-p", "--password", required =  True, dest="password", help 
 parser.add_argument("-v", "--version", required =  False, dest="version", default = "current", help = "enter version example-2015AA")
 parser.add_argument("-s", "--source", required =  True, dest="source", help = "enter a source vocabulary, like 'SNOMEDCT_US'")
 parser.add_argument("-i", "--identifier", required =  True, dest="identifier", help = "enter an identifier, like 9468002")
+parser.add_argument("-o", "--operation", required = True, dest="operation", help = "choose an operation such as 'children', 'parents', 'descendants', or 'ancestors'")
 
 
 args = parser.parse_args()
@@ -24,22 +25,17 @@ password = args.password
 version = args.version
 source = args.source
 identifier = args.identifier
+operation = args.operation
 uri = "https://uts-ws.nlm.nih.gov"
-
-##Choose one of these below to traverse parents, children, ancestors (recursive parents), or descendants (recursive children)
-#content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/children"
-content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/descendants"
-#content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/parents"
-#content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/ancestors"
+content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/"+operation
 
 ##get at ticket granting ticket for the session
 AuthClient = Authentication(username,password)
 tgt = AuthClient.gettgt()
-pageNumber=0
-
+pageNumber=1
 
 while True:
-    pageNumber += 1
+    
     query = {'ticket':AuthClient.getst(tgt),'pageNumber':pageNumber}
     r = requests.get(uri+content_endpoint,params=query)
     print(r.url)
@@ -68,7 +64,8 @@ while True:
       except:
         NameError
       print "\n"
-        
+    pageNumber += 1
+    
     if pageNumber > pageCount:
         print("End of result set")
         break

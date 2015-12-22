@@ -66,6 +66,7 @@ ui = jsonData["ui"]
 AtomCount = jsonData["atomCount"]
 Definitions = jsonData["definitions"]
 Atoms = jsonData["atoms"]
+DefaultPreferredAtom = jsonData["defaultPreferredAtom"]
 
 ## print out the shared data elements that are common to both the 'Concept' and 'SourceAtomCluster' class
 print ("classType: " + classType)
@@ -73,11 +74,12 @@ print ("ui: " + ui)
 print ("Name: " + name)
 print ("AtomCount: " + str(AtomCount))
 print ("Atoms: " + Atoms)
+print ("Default Preferred Atom: " + DefaultPreferredAtom)
 
 ## These data elements may or may not exist depending on what class ('Concept' or 'SourceAtomCluster') you're dealing with so we check for each one.
 try:
    jsonData["definitions"]
-   print ("defintions: " + jsonData["definitions"])
+   print ("definitions: " + jsonData["definitions"])
 except:
       pass
 

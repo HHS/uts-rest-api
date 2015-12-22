@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-## Compatible with UTS REST API - version 0.3 alpha
+## Compatible with UMLS REST API - version 0.51 Beta
 ## usage: perl retrieve-atoms.pl -u your-umls-username -p your-umls-password -v version (optional) -i identifier -s source_vocabulary(optional)
 ## If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
 ## This file takes a CUI or a source asserted identifier and retrieves atoms according to your query parameters.

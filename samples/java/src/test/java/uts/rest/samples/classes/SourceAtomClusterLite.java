@@ -2,7 +2,7 @@ package uts.rest.samples.classes;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties({"classType","memberships","attributes"})
+@JsonIgnoreProperties({"classType"})
 
 public class SourceAtomClusterLite {
 
@@ -22,6 +22,9 @@ public class SourceAtomClusterLite {
     private String ancestors;
 	private String relations;
 	private String definitions;
+	private String attributes;
+	private String defaultPreferredAtom;
+	
 	
 	
 	public String getUi() {
@@ -100,6 +103,16 @@ public class SourceAtomClusterLite {
 		return this.relations;
 	}
 	
+	public String getAttributes() {
+		
+		return this.attributes;
+	}
+	
+	public String getDefaultPreferredAtom() {
+		
+		return this.defaultPreferredAtom;
+	}
+	
 	private void setAtoms(String atoms) {
 		
 		this.atoms = atoms;
@@ -169,5 +182,16 @@ public class SourceAtomClusterLite {
 	private void setAncesotrs(String ancestors)  {
 		
 		this.ancestors = ancestors;
+	}
+	
+	private void setAttributes(String attributes) {
+		
+		this.attributes = attributes;
+		
+	}
+	
+	private void setDefaultPreferredAtom(String defautlPreferredAtom, String defaultPreferredAtom) {
+		
+		this.defaultPreferredAtom = defaultPreferredAtom;
 	}
 }
