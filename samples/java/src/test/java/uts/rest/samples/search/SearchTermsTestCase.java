@@ -1,4 +1,5 @@
 package uts.rest.samples.search;
+import uts.rest.samples.classes.SearchResult;
 import uts.rest.samples.util.RestTicketClient;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +9,6 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
-import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.path.json.JsonPath.with;
@@ -42,10 +42,9 @@ public class SearchTermsTestCase {
 	version = System.getProperty("version") == null ? "current": System.getProperty("version");
 
 		
-		List<HashMap<String,Object>> results;
-		
 		int total = 0;
 		int pageNumber = 0;
+		SearchResult[] results;
 		do  {
 			pageNumber++;
 			System.out.println("Fetching results for page "+pageNumber);
@@ -55,31 +54,37 @@ public class SearchTermsTestCase {
 	                	.param("ticket", ticketClient.getST(tgt))
 	                	.param("string", term)
 	                	.param("pageNumber",pageNumber)
-	                	//uncomment below to have results come back as SNOMED CT concept IDs
-	                	//.param("returnIdType", "sourceConcept")
+	                	//uncomment to return CUIs that have at least one matching term from the US Edition of SNOMED CT
 	                	//.param("sabs", "SNOMEDCT_US")
+	                	//uncomment to return SNOMED CT concepts rather than UMLS CUIs.
+	                	//.param("returnIdType", "sourceConcept")
 	                	//.param("searchType","exact") //valid values are exact,words, approximate,leftTruncation,rightTruncation, and normalizedString
 	        	 .expect()
 	       		 .statusCode(200)
 	        	 .when().get("/rest/search/"+version);
 	    	
 	    	String output = response.getBody().asString();
-	    	Configuration conf = Configuration.defaultConfiguration(); 
-	    	results = JsonPath.using(conf).parse(output).read("$.result.results");
+			Configuration config = Configuration.builder().mappingProvider(new JacksonMappingProvider()).build();
+			results = JsonPath.using(config).parse(output).read("$.result.results",SearchResult[].class);
 
 	    	//the /search endpoint returns an array of 'result' objects
 	    	//See http://documentation.uts.nlm.nih.gov/rest/search/index.html#sample-output for a complete list of fields output under the /search endpoint
-	    	for(HashMap<String, Object>result:results) {
+	    	for(SearchResult result:results) {
 	    		
-	    		for(String k: result.keySet()) {
-	    			
-	    			System.out.println(k+": "+ result.get(k));
-	    		}
+	    		String ui = result.getUi();
+	    		String name = result.getName();
+	    		String rootSource = result.getRootSource();
+	    		String uri = result.getUri();
+	    		System.out.println("ui: " + ui);
+	    		System.out.println("name: " + name);
+	    		System.out.println("rootSource: " + rootSource);
+	    		System.out.println("uri: " + uri);
+	    		
 	    		System.out.println("**");
 	    	}
 	    	System.out.println("----------");
-	    	total += results.size();
-		}while(!results.get(0).containsValue("NO RESULTS"));
+	    	total += results.length;
+		}while(!results[0].getUi().equals("NONE"));
 		//account for the one 'NO RESULTS' result :-/
 		total--;
 		System.out.println("Found " + total+ " results for "+ term);
