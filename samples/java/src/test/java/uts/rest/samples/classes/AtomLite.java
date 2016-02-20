@@ -2,7 +2,7 @@ package uts.rest.samples.classes;
 import com.fasterxml.jackson.annotation.*;
 
 //ignorable properties are of customizable - this is just an example
-@JsonIgnoreProperties({"classType","attributes","parents","children","definitions","relations"})
+@JsonIgnoreProperties({"classType","attributes","definitions","relations"})
 
 public class AtomLite {
 	
@@ -17,6 +17,9 @@ public class AtomLite {
 	private String code;
 	private String sourceConcept;
 	private String sourceDescriptor;
+	private String parents;
+	private String children;
+
 	
 	public String getUi() {
 		
@@ -73,7 +76,16 @@ public class AtomLite {
     	
     	return this.rootSource;
     }
-
+    
+    public String getParents() {
+    	
+    	return this.parents;
+    }
+    
+    public String getChildren() {
+    	
+    	return this.children;
+    }
 
     private void setUi(String ui) {
 		
@@ -109,6 +121,16 @@ public class AtomLite {
 	private void setSuppressible (boolean suppressible) {
 		
 		this.suppressible = suppressible;
+	}
+	
+	private void setParents (String parents) {
+		
+		this.parents = parents;
+	}
+	
+	private void setChildren (String children) {
+		
+		this.children = children;
 	}
 
 }
