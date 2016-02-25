@@ -19,6 +19,8 @@ public class AtomLite {
 	private String sourceDescriptor;
 	private String parents;
 	private String children;
+	private String ancestors;
+	private String descendants;
 
 	
 	public String getUi() {
@@ -86,6 +88,16 @@ public class AtomLite {
     	
     	return this.children;
     }
+    
+    public String getAncestors() {
+    	
+    	return this.ancestors;
+    }
+    
+    public String getDescendants() {
+    	
+    	return this.descendants;
+    }
 
     private void setUi(String ui) {
 		
@@ -131,6 +143,16 @@ public class AtomLite {
 	private void setChildren (String children) {
 		
 		this.children = children;
+	}
+	
+    public void setAncestors (String ancestors) {
+		
+		this.ancestors = ancestors;
+	}
+	
+	public void setDescendants (String descendants) {
+		
+		this.descendants = descendants;
 	}
 
 }
