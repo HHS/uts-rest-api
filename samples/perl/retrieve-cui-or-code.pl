@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-## Compatible with UMLS REST API - version 0.51 Beta
+## Compatible with UMLS REST API - version 0.60 Beta
 ## This file retrieves basic information of a source-asserted identifer or UMLS CUI.
 ## usage: perl retrieve-concept-info.pl -u your-umls-username -p your-umls-password -v version -i identifer -s source vocabulary
 ## If you do not provide the version parameter the script queries the latest avaialble UMLS publication.
@@ -46,10 +46,18 @@ my $client = REST::Client->new();
     printf "%s\n","Definitions- ".$cuiOrCode->{definitions};
     printf "%s\n","Relations- ".$cuiOrCode->{relations};
     printf "%s\n","Highest Ranking Atom- ".$cuiOrCode->{defaultPreferredAtom};
-
-    ## Semantic Types are only assigned to UMLS CUIs. There are often more than one semantic type per CUI.
-    printf "%s\n","Semantic Type(s)- " .join(",",@{ $cuiOrCode->{semanticTypes} } ) if !defined $source;
+    my $stys = $cuiOrCode->{semanticTypes};
     
+    ## Semantic Types are only assigned to UMLS CUIs. There are often more than one semantic type per CUI.
+    if (!defined $source) {
+       
+       printf "%s\n", "Semantic Types:";
+       foreach my $sty (@{ $stys }) {
+	  printf "%s\n", "uri: ".$sty->{uri};
+	  printf "%s\n", "name: ".$sty->{name};
+	
+        }
+    }  
     ##source-asserted data. UMLS CUIs do not have transitive relations.
     printf "%s\n","Parents- ".$cuiOrCode->{parents} if defined $source;
     printf "%s\n","Children- ".$cuiOrCode->{children} if defined $source;
