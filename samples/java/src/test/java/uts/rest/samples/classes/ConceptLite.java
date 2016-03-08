@@ -1,4 +1,7 @@
 package uts.rest.samples.classes;
+import java.util.HashMap;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.*;
 
 //of course these are customizable
@@ -8,7 +11,7 @@ public class ConceptLite {
 	
 	private String ui;
 	private String name;
-	private String[] semanticTypes;
+	private List<HashMap<String,Object>> semanticTypes;
 	private int atomCount;
 	private String atoms;
 	private String relations;
@@ -25,11 +28,11 @@ public class ConceptLite {
 		return this.name;
 	}
 	
-	public String[] getSemanticTypes() {
+    public List<HashMap<String,Object>> getSemanticTypes() {
 		
-		return this.semanticTypes;
+		return this.semanticTypes; 
 	}
-	
+    
 	public String getAtoms() {
 		
 		return this.atoms;
@@ -70,7 +73,7 @@ public class ConceptLite {
 		this.name=name;
 	}
 	
-	private void setSemanticTypes(String[] stys) {
+    public void setSemanticTypes(List<HashMap<String,Object>> stys) {
 		
 		this.semanticTypes = stys;
 	}

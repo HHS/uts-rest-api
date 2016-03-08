@@ -7,16 +7,21 @@ package uts.rest.samples.search;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
 import uts.rest.samples.util.RestTicketClient;
 import uts.rest.samples.classes.SearchResult;
 import uts.rest.samples.classes.ConceptLite;
+
 import org.junit.Test;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+
 import static com.jayway.restassured.RestAssured.given;
 import static org.apache.commons.lang.StringUtils.join;
 
@@ -53,14 +58,21 @@ public class BatchTermToCuiOrCodeTestCase {
 	    	 * retrieves the semantic type(s) for a CUI.
 	    	 */
 	    	ConceptLite concept = getConceptInfo(cui);
-	    	String stys[] = concept.getSemanticTypes();
-	    	
+			List<HashMap<String, Object>> semanticTypes = concept.getSemanticTypes();
+
 	    	System.out.println("\nResult "+ num);
 	    	System.out.println("cui:"+ cui);
 	    	System.out.println("ui: " + ui);
 	    	System.out.println("name:"+ name);
 	    	System.out.println("Highest ranking source of cui:" + rsab);
-	    	System.out.println("Semantic Type(s): "+ join(stys,","));
+	    	System.out.println("Semantic Type(s):");
+	    	
+			for(HashMap<String,Object> semanticType:semanticTypes) {
+				
+				System.out.println("\turi: "+semanticType.get("uri"));
+				System.out.println("\tname: "+semanticType.get("name"));
+			}
+	    	
 	    	num++;
 	       }
 	       System.out.println("----------");
@@ -87,7 +99,7 @@ public class BatchTermToCuiOrCodeTestCase {
 	                	//uncomment below to return only CUIs that have at least one non-obsolete/non-suppressible atom (relevant to the searchType) from the US Edition of SNOMED CT
 	                	//.param("sabs","SNOMEDCT_US")
 	                	//uncomment below to return CUIs that have at least one non-obsolete/non-suppressible atom that is an exact match with the search term
-	                    .param("searchType","exact") //valid values are exact,words, approximate,leftTruncation,rightTruncation, and normalizedString
+	                    //.param("searchType","exact") //valid values are exact,words, approximate,leftTruncation,rightTruncation, and normalizedString
 	                	//uncomment below to return source-asserted identifiers (from SNOMEDCT and other UMLS vocabularies) instead of CUIs
 	                	//.param("returnIdType","code")
 	        	 .expect()
