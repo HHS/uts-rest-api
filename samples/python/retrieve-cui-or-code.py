@@ -109,6 +109,10 @@ except:
 
 try:
    jsonData["semanticTypes"]
-   print ("Semantic Types: " + ', '.join(jsonData["semanticTypes"]))
+   print("Semantic Types:")
+   for stys in jsonData["semanticTypes"]:
+       print("uri: "+ stys["uri"])
+       print("name: "+ stys["name"])
+      
 except:
       pass
