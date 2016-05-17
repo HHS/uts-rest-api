@@ -35,10 +35,10 @@ foreach my $minConcept(@{ $xml->{minConceptGroup}->{minConcept}}) {
 
 sub run_query {
     
-        my ($path, $parameters) = @_;
+    my ($path, $parameters) = @_;
         
-        ##this is needed to prevent the '+' sign from being converted to an encoded entity - %2B
-        local $URI::Escape::escapes{'+'} = '+';
+    ##this is needed to prevent the '+' sign from being converted to an encoded entity - %2B
+    local $URI::Escape::escapes{'+'} = '+';
 	$uri->path($path);
 	$uri->query_form($parameters);
 	print qq{Fetching RxCUIs at $uri\n\n};
