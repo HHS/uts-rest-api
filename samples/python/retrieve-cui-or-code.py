@@ -1,6 +1,6 @@
 #################################################################################################
 # usage of the script
-# usage: python retrieve-cui-or-code.py -u USERNAME -p PASSWORD -v VERSION -i IDENTIFIER -s SOURCE
+# usage: python retrieve-cui-or-code.py -k APIKEY -v VERSION -i IDENTIFIER -s SOURCE
 # If you do not provide the -s parameter, the script assumes you are retrieving information for a
 # known UMLS CUI
 #################################################################################################
@@ -11,20 +11,22 @@ import json
 import argparse
 
 parser = argparse.ArgumentParser(description='process user given parameters')
-parser.add_argument("-u", "--username", required =  True, dest="username", help = "enter username")
-parser.add_argument("-p", "--password", required =  True, dest="password", help = "enter passowrd")
+#parser.add_argument("-u", "--username", required =  True, dest="username", help = "enter username")
+#parser.add_argument("-p", "--password", required =  True, dest="password", help = "enter passowrd")
+parser.add_argument("-k", "--apikey", required = True, dest = "apikey", help = "enter api key from your UTS Profile")
 parser.add_argument("-v", "--version", required =  False, dest="version", default = "current", help = "enter version example-2015AA")
 parser.add_argument("-i", "--identifier", required =  True, dest="identifier", help = "enter identifier example-C0018787")
 parser.add_argument("-s", "--source", required =  False, dest="source", help = "enter source name if known")
 
 args = parser.parse_args()
 
-username = args.username
-password = args.password
+#username = args.username
+#password = args.password
+apikey = args.apikey
 version = args.version
 identifier = args.identifier
 source = args.source
-AuthClient = Authentication(username,password)
+AuthClient = Authentication(apikey)
 
 ###################################
 #get TGT for our session

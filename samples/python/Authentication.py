@@ -1,22 +1,29 @@
 #!/usr/bin/python
+## 5/19/2016 - update to allow for authentication based on api-key, rather than username/pw
+## See https://documentation.uts.nlm.nih.gov/rest/authentication.html for full explanation
 
 import requests
 from pyquery import PyQuery as pq
 from lxml import etree
 
 uri="https://utslogin.nlm.nih.gov"
-auth_endpoint = "/cas/v1/tickets/"
-
+#option 1 - username/pw authentication at /cas/v1/tickets
+#auth_endpoint = "/cas/v1/tickets/"
+#option 2 - api key authentication at /cas/v1/api-key
+auth_endpoint = "/cas/v1/api-key"
 
 class Authentication:
 
-   def __init__(self, username,password):
-    self.username=username
-    self.password=password
+   #def __init__(self, username,password):
+   def __init__(self, apikey):
+    #self.username=username
+    #self.password=password
+    self.apikey=apikey
     self.service="http://umlsks.nlm.nih.gov"
 
    def gettgt(self):
-     params = {'username': self.username,'password': self.password}
+     #params = {'username': self.username,'password': self.password}
+     params = {'apikey': self.apikey}
      h = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "User-Agent":"python" }
      r = requests.post(uri+auth_endpoint,data=params,headers=h)
      d = pq(r.text)

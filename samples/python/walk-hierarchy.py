@@ -1,6 +1,6 @@
 ##################################################################################################################################################################
 # usage of the script
-# usage: python walk-hierarchy.py -u USERNAME -p PASSWORD -s SOURCE -i IDENTIFIER
+# usage: python walk-hierarchy.py -k APIKEY -v VERSION -s SOURCE -i IDENTIFIER -o operation
 # note that computing descendants can take time, especially for terminology concepts with many descendants, closer to the tree-top of a given source vocabulary.
 ##################################################################################################################################################################
 
@@ -11,8 +11,9 @@ import json
 import argparse
 
 parser = argparse.ArgumentParser(description='process user given parameters')
-parser.add_argument("-u", "--username", required =  True, dest="username", help = "enter username")
-parser.add_argument("-p", "--password", required =  True, dest="password", help = "enter passowrd")
+#parser.add_argument("-u", "--username", required =  True, dest="username", help = "enter username")
+#parser.add_argument("-p", "--password", required =  True, dest="password", help = "enter passowrd")
+parser.add_argument("-k", "--apikey", required = True, dest = "apikey", help = "enter api key from your UTS Profile")
 parser.add_argument("-v", "--version", required =  False, dest="version", default = "current", help = "enter version example-2015AA")
 parser.add_argument("-s", "--source", required =  True, dest="source", help = "enter a source vocabulary, like 'SNOMEDCT_US'")
 parser.add_argument("-i", "--identifier", required =  True, dest="identifier", help = "enter an identifier, like 9468002")
@@ -20,8 +21,9 @@ parser.add_argument("-o", "--operation", required = True, dest="operation", help
 
 
 args = parser.parse_args()
-username = args.username
-password = args.password
+#username = args.username
+#password = args.password
+apikey = args.apikey
 version = args.version
 source = args.source
 identifier = args.identifier
@@ -30,7 +32,7 @@ uri = "https://uts-ws.nlm.nih.gov"
 content_endpoint = "/rest/content/"+version+"/source/"+source+"/"+identifier+"/"+operation
 
 ##get at ticket granting ticket for the session
-AuthClient = Authentication(username,password)
+AuthClient = Authentication(apikey)
 tgt = AuthClient.gettgt()
 pageNumber=1
 
