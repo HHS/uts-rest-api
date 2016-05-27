@@ -1,3 +1,9 @@
+## usage: python get-content-view-members.py -k <your-api-key> -f <your-output-file>
+## You can specify a specific UMLS version with the -v argument, but it is not required
+## This script will download the CORE Problem List subset of SNOMED CT
+## and save to a file that you specify. There are around 250 pages of output to save - the CORE Problem list contains over 5,500 SNOMED CT codes
+## and attributes.  The script takes around 30 minutes to complete depending on your internet connection.
+
 from Authentication import *
 import requests
 import json
@@ -36,6 +42,7 @@ f = open(outputfile, 'w')
 #column headers - modify accordingly if you are computing a different subset
 f.write("SNOMED_CID|NAME|FIRST_IN_SUBSET|IS_RETIRED_FROM_SUBSET|OCCURRENCE|USAGE|REPLACED_BY_SNOMED_CID\n")
 
+##There are ~ 250 pages in this subset, if you're using the default of 25 objects per page.
 while pageNumber<=pageCount:
     
     query = {'ticket':AuthClient.getst(tgt),'pageNumber':pageNumber}
