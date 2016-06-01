@@ -65,6 +65,8 @@ while True:
         print "Source Vocabulary: " + result["rootSource"]
       except:
         NameError
+      
+      print("\n")
         
     
     ##Either our search returned nothing, or we're at the end
