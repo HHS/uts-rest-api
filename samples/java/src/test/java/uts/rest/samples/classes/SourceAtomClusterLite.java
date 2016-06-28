@@ -1,5 +1,8 @@
 package uts.rest.samples.classes;
 
+import java.util.HashMap;
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties({"classType"})
@@ -24,7 +27,8 @@ public class SourceAtomClusterLite {
 	private String definitions;
 	private String attributes;
 	private String defaultPreferredAtom;
-	
+	private List<HashMap<String,Object>> subsetMemberships;
+	private List<HashMap<String,Object>> contentViewMemberships;
 	
 	
 	public String getUi() {
@@ -113,6 +117,16 @@ public class SourceAtomClusterLite {
 		return this.defaultPreferredAtom;
 	}
 	
+	private List<HashMap<String,Object>> getSubsetMemberships() {
+		
+		return this.subsetMemberships;
+	}
+	
+    private List<HashMap<String,Object>> getContentViewMemberships() {
+		
+		return this.contentViewMemberships;
+	}
+	
 	private void setAtoms(String atoms) {
 		
 		this.atoms = atoms;
@@ -179,7 +193,7 @@ public class SourceAtomClusterLite {
 		this.parents = parents;
 	}
 	
-	private void setAncesotrs(String ancestors)  {
+	private void setAncestors(String ancestors)  {
 		
 		this.ancestors = ancestors;
 	}
@@ -190,8 +204,20 @@ public class SourceAtomClusterLite {
 		
 	}
 	
-	private void setDefaultPreferredAtom(String defautlPreferredAtom, String defaultPreferredAtom) {
+	private void setDefaultPreferredAtom(String defaultPreferredAtom) {
 		
 		this.defaultPreferredAtom = defaultPreferredAtom;
+	}
+	
+	private void setContentViewMemberships(List<HashMap<String,Object>> contentViewMemberships) {
+		
+		this.contentViewMemberships = contentViewMemberships;
+		
+	}
+	
+    private void setSubsetMemberships(List<HashMap<String,Object>> subsetMemberships) {
+		
+		this.subsetMemberships = subsetMemberships;
+		
 	}
 }

@@ -2,7 +2,7 @@ package uts.rest.samples.classes;
 import com.fasterxml.jackson.annotation.*;
 
 //ignorable properties are of customizable - this is just an example
-@JsonIgnoreProperties({"classType","attributes","definitions","relations"})
+@JsonIgnoreProperties({"classType","attributes","definitions","relations","contentViewMemberships"})
 
 public class AtomLite {
 	
