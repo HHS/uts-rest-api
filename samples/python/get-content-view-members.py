@@ -33,7 +33,7 @@ base_uri = "https://uts-ws.nlm.nih.gov"
 #C2711988 is the CUI for the SNOMED CT CORE Problem List content view
 #Full list of content views is here: https://www.nlm.nih.gov/research/umls/knowledge_sources/metathesaurus/release/content_views.html,
 #or over web services at https://uts-ws.nlm.nih.gov/rest/content-views/current?ticket=ST...
-content_view_endpoint = "/rest/content-views/current/CUI/C2711988/members"
+content_view_endpoint = "/rest/content-views/"+version+"/CUI/C2711988/members"
 tgt = AuthClient.gettgt()
 pageNumber=1
 pageCount=1
@@ -66,7 +66,7 @@ while pageNumber<=pageCount:
         
         if len(attributes) > 0:
             
-            cv_member_attributes = (("FIRST_IN_SUBSET",""),("IS_RETIRED_FROM_SUBSET", ""),("OCCURRENCE",""),("USAGE",""),("REPLACED_BY_SNOMED_CID",""))
+            cv_member_attributes = (("FIRST_IN_SUBSET",""), ('IS_RETIRED_FROM_SUBSET', ""), ("OCCURRENCE", ""), ("USAGE", ""), ("REPLACED_BY_SNOMED_CID", ""))
             cv_member_attributes = collections.OrderedDict(cv_member_attributes)
                         
             existing_attributes = {}
