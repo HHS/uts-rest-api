@@ -28,7 +28,6 @@ public class RetrieveCodeRestTestCase {
 		
 		    //if you omit the -Dversion parameter, use 'current' as the default.
 		    //version = System.getProperty("version") == null ? "current": System.getProperty("version");
-		    version = "2010AB";
 		    String path = "/rest/content/"+version+"/source/"+source+"/"+id;	    	
 			RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
 	    	Response response =  given().log().all()
