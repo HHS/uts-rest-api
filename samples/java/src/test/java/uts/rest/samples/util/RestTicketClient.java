@@ -12,6 +12,7 @@ public class RestTicketClient {
 	private String username = null;
 	private String password = null;
 	private String authUri = "https://utslogin.nlm.nih.gov";
+	private String apikey = null;
 	
 	public RestTicketClient (String username, String password) {
 		
@@ -19,22 +20,43 @@ public class RestTicketClient {
 		this.password = password;
 	}
 
-	public String getTgt()
-	{
-		RestAssured.baseURI=authUri;
-    	Response response =  given()//.log().all()
-            .request().with()
-            	.param("username", username)
-            	.param("password", password)
-    		.expect()
-   				.statusCode(201)
-    	.when().post("/cas/v1/tickets");
-    	
-    	Headers h = response.getHeaders();
-    	String tgt = h.getValue("location").substring(h.getValue("location").indexOf("TGT"));
-    	//response.then().log()
-    	return tgt;
+	public RestTicketClient (String apikey) {
+		this.apikey = apikey;
 	}
+	
+	public String getTgt()
+	
+	{
+		String tgt = null;
+		if(this.username != null && this.password != null){
+			RestAssured.baseURI=authUri;
+	    	Response response =  given()//.log().all()
+	            .request().with()
+	            	.param("username", username)
+	            	.param("password", password)
+	    		.expect()
+	   				.statusCode(201)
+	    	.when().post("/cas/v1/tickets");
+	    	
+	    	Headers h = response.getHeaders();
+	    	tgt = h.getValue("location").substring(h.getValue("location").indexOf("TGT"));
+	    	//response.then().log()
+	    	
+		} else if (apikey != null) {
+			RestAssured.baseURI=authUri;
+	    	Response response =  given()//.log().all()
+	            .request().with()
+	            	.param("apikey", apikey)
+	    		.expect()
+	   				.statusCode(201)
+	    	.when().post("/cas/v1/api-key");
+	    	
+	    	Headers h = response.getHeaders();
+	    	tgt = h.getValue("location").substring(h.getValue("location").indexOf("TGT"));
+		}
+		return tgt;
+	}
+	
 	
 	public String getST(String tgt)
 	{
