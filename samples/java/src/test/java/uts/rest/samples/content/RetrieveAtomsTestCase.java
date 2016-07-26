@@ -1,31 +1,35 @@
 /*This example allows you to retrieve atoms for a known CUI or source-asserted identifier in the UMLS
 You can run this class as a Junit4 test case - be sure and put each of the arguments as VM arguments
-in your runtime configuration, such as -Dusername=username -Dpassword=password -Did=C0155502.
+in your runtime configuration, such as -Dapikey -Did=C0155502.
 To retrieve atoms that belong to a source-asserted concept, descriptor, or code, use the 
 -Dsource parameter, such as -Dsource=SNOMEDCT_US
 */
 package uts.rest.samples.content;
 import uts.rest.samples.classes.AtomLite;
 import uts.rest.samples.util.RestTicketClient;
+
 import org.junit.Test;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+
 import static com.jayway.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 
 
 public class RetrieveAtomsTestCase {
 	
-	String username = System.getProperty("username"); 
-	String password = System.getProperty("password");
+	//String username = System.getProperty("username"); 
+	//String password = System.getProperty("password");
+	String apiKey = System.getProperty("apikey");
 	String id = System.getProperty("id");
 	String source = System.getProperty("source");
 	//specifying version is not required - if you leave it out the script will default to the latest UMLS publication.
 	String version = System.getProperty("version");
-	RestTicketClient ticketClient = new RestTicketClient(username,password);
+	RestTicketClient ticketClient = new RestTicketClient(apiKey);
 	//get a ticket granting ticket for this session.
 	String tgt = ticketClient.getTgt();
 	

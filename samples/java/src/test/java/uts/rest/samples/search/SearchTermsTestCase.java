@@ -1,15 +1,19 @@
 package uts.rest.samples.search;
 import uts.rest.samples.classes.SearchResult;
 import uts.rest.samples.util.RestTicketClient;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import org.junit.Test;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
+
 import static com.jayway.restassured.RestAssured.given;
 import static com.jayway.restassured.path.json.JsonPath.with;
 import static com.jayway.jsonpath.JsonPath.read;
@@ -20,18 +24,19 @@ For convenience, google's quick json parser is also included in the pom.xml file
 https://code.google.com/p/quick-json/
 You can run this class as a Junit4 test case - be sure and put each of the arguments as VM arguments
 You may page through results returned from the /search endpoint until you reach the null  'ui:NONE' or 'name:NO RESULTS'.  These results will always be a single result on their own page.
-in your runtime configuration, such as -Dusername=username -Dpassword=password -Dterm = "diabetic foot"
+in your runtime configuration, such as -Dapikey -Dterm = "diabetic foot"
 
 */
 
 public class SearchTermsTestCase {
 
-	String username = System.getProperty("username"); 
-	String password = System.getProperty("password");
+	//String username = System.getProperty("username"); 
+	//String password = System.getProperty("password");
+	String apiKey = System.getProperty("apikey");
 	//version is not a required argument - if left out you will search against the latest UMLS publication
 	String version = System.getProperty("version");
 	String term = System.getProperty("term");
-	RestTicketClient ticketClient = new RestTicketClient(username,password);
+	RestTicketClient ticketClient = new RestTicketClient(apiKey);
 	//get a ticket granting ticket for this session.
 	String tgt = ticketClient.getTgt();
 	

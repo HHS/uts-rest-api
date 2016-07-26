@@ -6,23 +6,28 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
+
 import uts.rest.samples.util.RestTicketClient;
 import uts.rest.samples.classes.SearchResult;
+
 import org.junit.Test;
+
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.spi.mapper.JacksonMappingProvider;
 import com.jayway.restassured.RestAssured;
 import com.jayway.restassured.response.Response;
+
 import static com.jayway.restassured.RestAssured.given;
 
 
 public class BatchTermToCuiOrCodeTestCase {
 
-	String username = System.getProperty("username"); 
-	String password = System.getProperty("password");
+	//String username = System.getProperty("username"); 
+	//String password = System.getProperty("password");
+	String apiKey = System.getProperty("apikey");
 	String version = System.getProperty("version");
-	RestTicketClient ticketClient = new RestTicketClient(username,password);
+	RestTicketClient ticketClient = new RestTicketClient(apiKey);
 	//get a ticket granting ticket for this session.
 	String tgt = ticketClient.getTgt();
 	

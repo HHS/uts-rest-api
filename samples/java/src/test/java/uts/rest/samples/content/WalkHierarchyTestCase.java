@@ -16,15 +16,16 @@ import static org.junit.Assert.*;
 
 public class WalkHierarchyTestCase {
 
-	String username = System.getProperty("username"); 
-	String password = System.getProperty("password");
+	//String username = System.getProperty("username"); 
+	//String password = System.getProperty("password");
+	String apiKey = System.getProperty("apikey");
 	String id = System.getProperty("id");
 	String source = System.getProperty("source");
 	//specifying version is not required - if you leave it out the script will default to the latest UMLS publication.
 	String version = System.getProperty("version");
 	//use either 'parents', 'children', 'ancestors', or 'descendants' here
 	String operation = System.getProperty("operation");
-	RestTicketClient ticketClient = new RestTicketClient(username,password);
+	RestTicketClient ticketClient = new RestTicketClient(apiKey);
 	//get a ticket granting ticket for this session.
 	String tgt = ticketClient.getTgt();
 	

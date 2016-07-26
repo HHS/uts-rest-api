@@ -1,7 +1,7 @@
 /*This example allows you to retrieve information about a known UMLS CUI.
 Examples are at https://github.com/jayway/rest-assured/tree/master/examples/rest-assured-itest-java/src/test/java/com/jayway/restassured/itest/java
 You can run this class as a Junit4 test case - be sure and put each of the arguments as VM arguments 
-in your runtime configuration, such as -Dusername=username -Dpassword=password -Did=C0018787
+in your runtime configuration, such as -Dapikey=12345-abcdef -Did=C0018787
 */
 
 package uts.rest.samples.content;
@@ -19,11 +19,12 @@ import static org.apache.commons.lang.StringUtils.join;
 
 public class RetrieveCuiTestCase {
   
-	String username = System.getProperty("username"); 
-	String password = System.getProperty("password");
+	//String username = System.getProperty("username"); 
+	//String password = System.getProperty("password");
+	String apiKey = System.getProperty("apikey");
 	String id = System.getProperty("id");
 	String version = System.getProperty("version");
-	RestTicketClient ticketClient = new RestTicketClient(username,password);
+	RestTicketClient ticketClient = new RestTicketClient(apiKey);
 	//get a ticket granting ticket for this session.
 	String tgt = ticketClient.getTgt();
 
