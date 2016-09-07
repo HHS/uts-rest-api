@@ -16,6 +16,8 @@ To run the perl clients, you'll need to install the following perl modules:
 *   LWP::UserAgent
 *   HTML::Form
 
+Note: On OS X, you'll need to install the Mozilla:CA module or set the PERL_LWP_SSL_CA_FILE environment variable to point to the CA X.509 certificates.
+
 ###Python
 To run the python clients, you'll need to have at Python version 2.7 or above installed on your system.  The scripts have been tested on 2.7 as well as Python 3.0.  You will also need the following python libraries installed:
 *   requests
