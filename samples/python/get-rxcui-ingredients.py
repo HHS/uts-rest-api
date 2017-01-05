@@ -4,8 +4,8 @@
 #if active, get all ingredients (IN,MIN,PIN)
 #if there is a MIN, add that to the ingredients dictionary, ignore others
 #if there is a PIN, add that to the ingredients dictionary, ignore others
-#if only an IN exists, check for a salt form (PIN), and then see if that salt form exists already in USPMG.
-#if the PIN does not exist, add the single ingredient form to the list.
+#if only an IN exists add that to the ingredients dictionary
+##at the end, for each IN, check and see if USP has a related salt form PIN via the UMLS API  If so, remove the IN.
 
 import requests
 import json
@@ -29,7 +29,6 @@ inputfile=args.inputfile
 outputfile=args.outputfile
 
 ingredients = {}
-insFromPins = []
 complete = False
 
 ###################################
@@ -48,7 +47,7 @@ def uts_get(path,query):
   print(r.url)
   if r.status_code == 404:
      print "Found 404"
-     return "404"
+     return "no usp atom"
   else:
      return simplejson.loads(r.text)
   
@@ -90,7 +89,6 @@ def parseIngredient(related):
     
     results = {}
     global complete
-    global insFromPins
     complete = False
     
     for group in related["relatedGroup"]["conceptGroup"]:
@@ -116,10 +114,15 @@ def parseIngredient(related):
            if results["PIN"]["rxcui"] not in ingredients.keys():
               ingredients[results["PIN"]["rxcui"]] = results["PIN"]
               #print results["PIN"]["name"]
-              if results["IN"]["name"] not in insFromPins:
-                 insFromPins.append(results["IN"]["name"])
            complete = True
-
+           
+       
+       elif "MIN" not in results and "PIN" not in results and results["IN"]["rxcui"] not in ingredients.keys() and complete == False:
+           if results["IN"]["rxcui"] not in ingredients.keys():
+              ingredients[results["IN"]["rxcui"]] = results["IN"]
+           complete = True
+       
+       '''
        elif "MIN" not in results and "PIN" not in results and results["IN"]["rxcui"] not in ingredients.keys() and complete == False:    
            saltFormCuis = getSaltFormCuis(results["IN"]["rxcui"])
            for rxcui in saltFormCuis:
@@ -141,6 +144,7 @@ def parseIngredient(related):
                            print "added new salt form, " + saltFormCuis[rxcui]["name"]+ " to the list of ingredients"
                            ingredients[results["IN"]["rxcui"]] = results["IN"]
                            complete = True
+       '''
                         
 with open(inputfile, 'r') as f:
      for line in f:        
@@ -157,6 +161,17 @@ f.close()
 
 w = open(outputfile, 'w')
 
+##cleanup - remove INs that have a salt form with an exising USP atom
+for rxcui in ingredients.keys():
+    if rxcui["tty"] == "IN":
+       saltFormCuis = getSaltFormCuis(rxcui)
+       for pin in saltFormCuis:
+           uspAtom = checkForUspAtom(pin[rxcui]["umlscui"])
+           if uspAtom != "no usp atom" and rxcui in ingredients.keys():
+              print "removing " + rxcui["name"]
+              del ingredients[rxcui]    
+
+##output results
 for rows in sorted(ingredients.values()):
     line = '|'.join(rows.values())
     w.write(line+"\n")
