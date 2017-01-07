@@ -13,6 +13,7 @@ import argparse
 import simplejson
 import collections
 import sys
+import time
 from requests import utils
 from Authentication import *
 parser = argparse.ArgumentParser(description='process user given parameters')
@@ -23,6 +24,7 @@ parser.add_argument("-o", "--outputfile", required = True, dest = "outputfile", 
 
 uts = "https://uts-ws.nlm.nih.gov/"
 uri = "https://rxnav.nlm.nih.gov"
+#uri = "https://morc3.nlm.nih.gov"
 args = parser.parse_args()
 apikey = args.apikey
 inputfile=args.inputfile
@@ -38,15 +40,21 @@ AuthClient = Authentication(apikey)
 tgt = AuthClient.gettgt()
 
 def get(path,query):
-  r = requests.get(uri+path, params=query)
-  print(r.url)
-  return simplejson.loads(r.text)
-  
+      try:
+         time.sleep(.05)
+         r = requests.get(uri+path, params=query, timeout=10)
+         print(r.url)
+         return simplejson.loads(r.text)
+      except requests.exceptions.RequestException as e:
+         print "Connection timing out..."
+         sys.exit(1)
+   
+       
 def uts_get(path,query):
   r = requests.get(uts+path, params=query)
   print(r.url)
   if r.status_code == 404:
-     print "Found 404"
+     #print "404"
      return "no usp atom"
   else:
      return simplejson.loads(r.text)
@@ -79,6 +87,7 @@ def getSaltFormCuis(rxcui):
     #print cuis
     return cuis
 
+ 
 def checkForUspAtom(cui):
     path = "/rest/content/current/CUI/"+cui+"/atoms"
     query = {"sabs":"USPMG","ttys":"PT","ticket":AuthClient.getst(tgt)}
@@ -122,29 +131,6 @@ def parseIngredient(related):
               ingredients[results["IN"]["rxcui"]] = results["IN"]
            complete = True
        
-       '''
-       elif "MIN" not in results and "PIN" not in results and results["IN"]["rxcui"] not in ingredients.keys() and complete == False:    
-           saltFormCuis = getSaltFormCuis(results["IN"]["rxcui"])
-           for rxcui in saltFormCuis:
-                  uspAtom = checkForUspAtom(saltFormCuis[rxcui]["umlscui"])
-                  ##if there is a USP atom that exists for the salt form, add it into the insFromPins list and add it to the ingredients dictionary
-                  ##this prevents RxNorm single ingredient drugs that have salt forms already in the USP Example Drug list from appearing as if they are new
-                  if uspAtom!="404" and rxcui not in ingredients.keys():
-                       #remove the CUI, we don't need it anymore
-                       del saltFormCuis[rxcui]["umlscui"]
-                       ingredients[rxcui] = saltFormCuis[rxcui]
-                       print "added existing salt form, " + saltFormCuis[rxcui]["name"]+ " to the list of ingredients"
-                       if results["IN"]["name"] not in insFromPins:
-                          #insFromPins.append(saltFormCuis[rxcui]["name"].lower().split(' ')[0])
-                          insFromPins.append(results["IN"]["name"])
-                       complete = True
-                  #here there is no existing salt form from USP, so we add a new single ingredient as long as it hasn't been added already
-                  elif uspAtom == "404" and results["IN"]["rxcui"] not in ingredients.keys():
-                        if results["IN"]["name"] not in insFromPins:
-                           print "added new salt form, " + saltFormCuis[rxcui]["name"]+ " to the list of ingredients"
-                           ingredients[results["IN"]["rxcui"]] = results["IN"]
-                           complete = True
-       '''
                         
 with open(inputfile, 'r') as f:
      for line in f:        
@@ -155,22 +141,35 @@ with open(inputfile, 'r') as f:
         if status == "Active":
             related = checkIngredient(rxcui)
             parseIngredient(related)
-                  
-
+        elif status == "Remapped" or status == "Quantified":
+            for remapped in json["rxcuiStatus"]["minConceptGroup"]["minConcept"]:
+                related = checkIngredient(remapped["rxcui"])
+                parseIngredient(related)
+                
+            
 f.close()
 
 w = open(outputfile, 'w')
 
-##cleanup - remove INs that have a salt form with an exising USP atom
+##cleanup - remove INs that have a salt form with an exising USP atom, and add the USP salt form if it is not already in the ingredients dictionary
 for rxcui in ingredients.keys():
-    if rxcui["tty"] == "IN":
+    if ingredients[rxcui]["tty"] == "IN":
        saltFormCuis = getSaltFormCuis(rxcui)
-       for pin in saltFormCuis:
-           uspAtom = checkForUspAtom(pin[rxcui]["umlscui"])
-           if uspAtom != "no usp atom" and rxcui in ingredients.keys():
-              print "removing " + rxcui["name"]
-              del ingredients[rxcui]    
-
+       for pin in saltFormCuis.keys():
+           ##not all PINs in RxNorm will have UMLS CUIs
+           #print saltFormCuis[pin]
+           if saltFormCuis[pin]["umlscui"]:
+                 uspAtom = checkForUspAtom(saltFormCuis[pin]["umlscui"])
+                 if uspAtom != "no usp atom" and rxcui in ingredients.iterkeys():
+                     print "removing " + ingredients[rxcui]["name"]
+                     #remove the single ingredient form
+                     del ingredients[rxcui]
+                     #add the USP salt form
+                     if saltFormCuis[pin]["rxcui"] not in ingredients.iterkeys():
+                        print "adding " + saltFormCuis[pin]["name"]
+                        #get rid of the UMLS CUI - we don't need it anymore
+                        del saltFormCuis[pin]["umlscui"]
+                        ingredients[rxcui] = saltFormCuis[pin]
 ##output results
 for rows in sorted(ingredients.values()):
     line = '|'.join(rows.values())
