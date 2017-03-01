@@ -79,6 +79,9 @@ def getNormalForms(rxcui_ingredient):
         
     return drug_dictionary
 
+
+###could consolidate getDrugForms and getDoseForms into one function with variable term type and dict key inputs    
+    
 def getDrugForms(rxcui):
     ### retrieve SCDFs/SBDFs associated with each normal form
     global drug_dictionary
@@ -127,8 +130,8 @@ with open(inputfile,'r') as niosh:
           not_found.write("no related group found for" + ingredient_name+"\n")
 
 ##add normal forms
-for rxcui_ingredient in drug_ingredients.keys():
-    drug_dictionary = getNormalForms(rxcui_ingredient)          
+for rxcui in drug_ingredients.keys():
+    drug_dictionary = getNormalForms(rxcui)          
           
 ##add drug forms
 for rxcui in drug_dictionary.keys():
