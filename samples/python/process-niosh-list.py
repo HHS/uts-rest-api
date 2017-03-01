@@ -82,12 +82,32 @@ def getNormalForms(rxcui_ingredient):
 def getDrugForms(rxcui):
     ### retrieve SCDFs/SBDFs associated with each normal form
     global drug_dictionary
-   
+    json = getRelationsByTermType(rxcui,"SCDF SBDF")
+    for related_group in json["relatedGroup"]["conceptGroup"]:
+        try:
+            for properties in related_group["conceptProperties"]:
+                   drug_forms = {"drug-form":properties["name"]}
+                   drug_dictionary[rxcui].update(drug_forms)  
+        except:
+            KeyError
+            print ("no related group for " + rxcui)
+            not_found.write("no related group found for " + rxcui+"\n")
+                
     return drug_dictionary
     
 def getDoseForms(rxcui):
     ### retrieve DFs associated with each normal form
     global drug_dictionary
+    json = getRelationsByTermType(rxcui,"DF")
+    for related_group in json["relatedGroup"]["conceptGroup"]:
+        try:
+            for properties in related_group["conceptProperties"]:
+                   dose_forms = {"dose-form":properties["name"]}
+                   drug_dictionary[rxcui].update(dose_forms)  
+        except:
+            KeyError
+            print ("no related group for " + rxcui)
+            not_found.write("no related group found for " + rxcui+"\n")
                 
     return drug_dictionary
     
@@ -101,18 +121,7 @@ with open(inputfile,'r') as niosh:
         try:
             for rxcui_ingredient in search["idGroup"]["rxnormId"]:
                 drug_ingredients[rxcui_ingredient] = {"rxcui-ingredient":rxcui_ingredient,"ingredient-name":ingredient_name}
-                '''
-                for related_group in drug_form_groups["relatedGroup"]["conceptGroup"]:
-                    try:
-                       for properties in related_group["conceptProperties"]:
-                           print("getting dose form for " + properties["rxcui"])
-                           dose_form = getDoseForms(properties["rxcui"])
-                           drug_products[properties["rxcui"]] = {"ingredient":ingredient,"dose-form":dose_form,"rxcui-ingredient":rxcui_ingredient,"tty":properties["tty"],"rxcui-drug-form":properties["rxcui"],"name":properties["name"]}
-                    except:
-                       KeyError
-                       print ("no related group for " + ingredient)
-                       not_found.write("no related group found for" + properties["rxcui"]+"\n")
-                       '''
+               
         except:
           KeyError
           not_found.write("no related group found for" + ingredient_name+"\n")
@@ -121,12 +130,17 @@ with open(inputfile,'r') as niosh:
 for rxcui_ingredient in drug_ingredients.keys():
     drug_dictionary = getNormalForms(rxcui_ingredient)          
           
+##add drug forms
+for rxcui in drug_dictionary.keys():
+    drug_dictionary = getDoseForms(rxcui)
 
+for rxcui in drug_dictionary.keys():
+    drug_dictionary = getDrugForms(rxcui)
+   
 for rxcui in sorted(drug_dictionary.keys()):
     #print drug_products["rxcui"]
     hazardous_drug_products_file.write('|'.join(drug_dictionary[rxcui].values())+"\n")
 
 
-print (drug_dictionary)
-  #hazardous_drug_products_file.write(drug_dictionary)  
+
  
