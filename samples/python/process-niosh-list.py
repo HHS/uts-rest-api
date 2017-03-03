@@ -3,8 +3,8 @@ The script performs the following functions:
    1) Reads in a modified version of the NIOSH csv file
       Corrections and changes to the 2016 NIOSH list include:
       a) afatanib corrected to 'afatinib'
-      b) bacillus calmette guerin corrected to bacillus calmette-guerin
-      c) ergonovine/methylergonovine broken out into individual ingredients
+      b) bacillus calmette guerin corrected to 'bacillus calmette-guerin'
+      c) ergonovine/methylergonovine broken out into individual ingredients with their own rows
       d) menopur changed to 'follicle stimulating hormone/luteinizing hormone'
       e) misoprostal corrected to 'misoprostol'
       f) omacetaxin corrected to 'omacetaxine'
@@ -36,11 +36,12 @@ inputfile=args.inputfile
 hazardous_drug_products_file = open('hazardous-drug-products.txt','w')
 not_found = open('ingredients-not-found.txt','w')
 drug_dictionary = {}
-drug_ingredients = {} 
+drug_ingredients = {}
+drug_master_view = {}
 
 def get(path,query):
       try:
-         time.sleep(.05)
+         time.sleep(.10)
          r = requests.get(uri+path, params=query, timeout=10)
          print(r.url)
          return simplejson.loads(r.text)
@@ -56,12 +57,16 @@ def getRxcuiByName(name):
     return results
     
 def getRelationsByTermType(rxcui,ttys):
-##todo - write algorithm.
     path = "/REST/rxcui/"+rxcui+"/related.json"
     query = {"tty":ttys}
     results = get(path,query)
     return results
 
+def getAllProperties(rxcui):
+    path = "/REST/rxcui/"+rxcui+"/allProperties.json"
+    query = {"prop":"all"}
+    results = get(path,query)
+    return results
     
     
 def getNormalForms(rxcui_ingredient):
@@ -114,16 +119,39 @@ def getDoseForms(rxcui):
                 
     return drug_dictionary
     
-           
+
+def getDrugProperties(rxcui):
+    global drug_dictionary
+    json = getAllProperties(rxcui)
+    drug_properties = {"PRESCRIBABLE":"","VET_DRUG":""}
+    for properties in json["propConceptGroup"]["propConcept"]:
+        try:
+           if properties["propName"] == "PRESCRIBABLE" and properties["propValue"] == "Y":
+              drug_properties["PRESCRIBABLE"] = "PRESCRIBABLE"
+           if properties["propName"] == "VET_DRUG" and properties["propValue"] == "US":
+              drug_properties["VET_DRUG"] == "VET"
+              #print ("found vet drug " + rxcui)
+        except:
+           KeyError
+           print("no attribute available for " + rxcui)
+    print(drug_properties)     
+    drug_dictionary[rxcui].update(drug_properties)
+    return drug_dictionary
+
+    
 with open(inputfile,'r') as niosh:
 
     reader = csv.DictReader(niosh, delimiter='|')
     for line in reader:
         ingredient_name = line['Generic Name']
+        table_no = line['Table No']
+        black_box = line['Black Box']
+        preg_cat = line['Preg Cat']
+        activity = line['Activity']
         search = getRxcuiByName(ingredient_name)
         try:
             for rxcui_ingredient in search["idGroup"]["rxnormId"]:
-                drug_ingredients[rxcui_ingredient] = {"rxcui-ingredient":rxcui_ingredient,"ingredient-name":ingredient_name}
+                drug_ingredients[rxcui_ingredient] = {"rxcui-ingredient":rxcui_ingredient,"ingredient-name":ingredient_name,"table-no":table_no,"black-box":black_box,"preg_cat":preg_cat,"activity":activity}
                
         except:
           KeyError
@@ -133,17 +161,34 @@ with open(inputfile,'r') as niosh:
 for rxcui in drug_ingredients.keys():
     drug_dictionary = getNormalForms(rxcui)          
           
-##add drug forms
+##add dose forms
 for rxcui in drug_dictionary.keys():
     drug_dictionary = getDoseForms(rxcui)
 
+##add drug forms
 for rxcui in drug_dictionary.keys():
     drug_dictionary = getDrugForms(rxcui)
-   
+
+## check for human prescribable and vet drug properties    
+for rxcui in drug_dictionary.keys():
+    drug_dictionary = getDrugProperties(rxcui)
+
+
+for rxcui_ingredient in drug_ingredients.keys():
+    for rxcui,rows in drug_dictionary.iteritems():
+        for value in rows.values():
+            if value == rxcui_ingredient:
+               drug_master_view[rxcui] = dict(drug_ingredients[rxcui_ingredient], **drug_dictionary[rxcui])
+               drug_master_view[rxcui]['niosh-drug-form'] = "NIOSH Category "+drug_master_view[rxcui]['table-no'] + " " + drug_master_view[rxcui]['dose-form']
+    
 for rxcui in sorted(drug_dictionary.keys()):
     #print drug_products["rxcui"]
-    hazardous_drug_products_file.write('|'.join(drug_dictionary[rxcui].values())+"\n")
-
-
+    hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")
+     
+     
+     
+     
+     
+     
 
  
