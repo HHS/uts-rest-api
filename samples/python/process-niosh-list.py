@@ -8,10 +8,11 @@ The script performs the following functions:
       d) menopur changed to 'follicle stimulating hormone/luteinizing hormone'
       e) misoprostal corrected to 'misoprostol'
       f) omacetaxin corrected to 'omacetaxine'
-   2) Retrieves the RxCUIs for each ingredient
-   3) For each ingredient, retrieves the list of RxNorm SCDFs,SBDFs,
-   4) MaybeRetrieve the VET_DRUG property for each drug to provide for the Vet community
-   5)
+   2) Retrieves the RxCUIs for each ingredient, and place into an ingredient dictionary along with some of the NIOSH information like Pregnancy Cat, Black Box, etc.
+   3) For each ingredient, retrieves the list of RxNorm SCD,SBD,GPCK,BPCK (the normal forms) and place into drug_products dictionary.
+   4) For each normal form, retrieve SBDF,SCDF,DF,PRESCRIBABLE and VET_DRUG properties
+   5) Merge drug_products dictionary and drug_ingredients dictionary
+   6) Write output
 
 '''
 
@@ -34,6 +35,7 @@ args = parser.parse_args()
 inputfile=args.inputfile
 
 hazardous_drug_products_file = open('hazardous-drug-products.txt','w')
+drug_synonyms = open('hazardous-drug-synonyms.txt','w')
 not_found = open('ingredients-not-found.txt','w')
 drug_dictionary = {}
 drug_ingredients = {}
@@ -123,7 +125,7 @@ def getDoseForms(rxcui):
 def getDrugProperties(rxcui):
     global drug_dictionary
     json = getAllProperties(rxcui)
-    drug_properties = {"PRESCRIBABLE":"","VET_DRUG":""}
+    drug_properties = {"PRESCRIBABLE":"","VET_DRUG":"","SYNONYMS":[]}
     for properties in json["propConceptGroup"]["propConcept"]:
         try:
            if properties["propName"] == "PRESCRIBABLE" and properties["propValue"] == "Y":
@@ -131,6 +133,11 @@ def getDrugProperties(rxcui):
            if properties["propName"] == "VET_DRUG" and properties["propValue"] == "US":
               drug_properties["VET_DRUG"] == "VET"
               #print ("found vet drug " + rxcui)
+           if properties["propName"] == "RxNorm Synonym":
+              #drug_synonyms = {"rxcui":rxcui,"synonym":properties["propValue"]}
+              print ("found synonym " + properties["propValue"])
+              drug_properties["SYNONYMS"].append(properties["propValue"])
+   
         except:
            KeyError
            print("no attribute available for " + rxcui)
@@ -183,9 +190,18 @@ for rxcui_ingredient in drug_ingredients.keys():
     
 for rxcui in sorted(drug_dictionary.keys()):
     #print drug_products["rxcui"]
-    hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")
-     
-     
+    #hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")
+    for key,value in drug_master_view[rxcui].items():
+        if key == "SYNONYMS":
+           for synonym in value:
+               drug_synonyms.write(rxcui+"|"+synonym+"\n")
+    
+    ##Don't need synonyms anymore so we remove from the dictionary
+    del drug_master_view[rxcui]["SYNONYMS"]               
+    hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")     
+        
+
+    
      
      
      
