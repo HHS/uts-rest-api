@@ -78,7 +78,8 @@ def getNormalForms(rxcui_ingredient):
     for related_group in json["relatedGroup"]["conceptGroup"]:
         try:
             for properties in related_group["conceptProperties"]:
-                drug_dictionary[properties["rxcui"]] = {"rxcui-ingredient":rxcui_ingredient,"tty":properties["tty"],"rxcui":properties["rxcui"],"name":properties["name"]}
+                drug_dictionary[properties["rxcui"]] = {"rxcui-ingredient":rxcui_ingredient,"tty":properties["tty"],"rxcui":properties["rxcui"]}
+                #drug_dictionary[properties["rxcui"]] = {"rxcui-ingredient":rxcui_ingredient,"tty":properties["tty"],"rxcui":properties["rxcui"],"name":properties["name"]}
         except:
             KeyError
             print ("no related group for " + rxcui_ingredient)
@@ -125,18 +126,23 @@ def getDoseForms(rxcui):
 def getDrugProperties(rxcui):
     global drug_dictionary
     json = getAllProperties(rxcui)
-    drug_properties = {"PRESCRIBABLE":"","VET_DRUG":"","SYNONYMS":[]}
+    tty = ""
+    isPrescribable = False
+    drug_properties = {"PRESCRIBABLE":"","VET_DRUG":"","NAMES":[]}
     for properties in json["propConceptGroup"]["propConcept"]:
+        if properties["propName"] == "TTY":
+           tty = properties["propValue"]
         try:
            if properties["propName"] == "PRESCRIBABLE" and properties["propValue"] == "Y":
               drug_properties["PRESCRIBABLE"] = "PRESCRIBABLE"
            if properties["propName"] == "VET_DRUG" and properties["propValue"] == "US":
               drug_properties["VET_DRUG"] == "VET"
-              #print ("found vet drug " + rxcui)
-           if properties["propName"] == "RxNorm Synonym":
-              #drug_synonyms = {"rxcui":rxcui,"synonym":properties["propValue"]}
-              print ("found synonym " + properties["propValue"])
-              drug_properties["SYNONYMS"].append(properties["propValue"])
+           if properties["propName"] == "RxNorm Synonym" or properties["propName"] == "Tallman Synonym":
+              drug_properties["NAMES"].append({"tty":tty,"type":"synonym","name":properties["propValue"]})
+           if properties["propName"] ==  "Prescribable Synonym":
+              drug_properties["NAMES"].append({"tty":tty,"type":"prescribable-synonym","name":properties["propValue"]})
+           if properties["propName"] == "RxNorm Name":            
+              drug_properties["NAMES"].append({"tty":tty,"type":"normal-form","name":properties["propValue"]})
    
         except:
            KeyError
@@ -180,7 +186,7 @@ for rxcui in drug_dictionary.keys():
 for rxcui in drug_dictionary.keys():
     drug_dictionary = getDrugProperties(rxcui)
 
-
+##join the drug_ingredients dictionary to the drug_dictionary to create a master view
 for rxcui_ingredient in drug_ingredients.keys():
     for rxcui,rows in drug_dictionary.iteritems():
         for value in rows.values():
@@ -191,13 +197,13 @@ for rxcui_ingredient in drug_ingredients.keys():
 for rxcui in sorted(drug_dictionary.keys()):
     #print drug_products["rxcui"]
     #hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")
-    for key,value in drug_master_view[rxcui].items():
-        if key == "SYNONYMS":
-           for synonym in value:
-               drug_synonyms.write(rxcui+"|"+synonym+"\n")
+    for key in drug_master_view[rxcui].keys():
+        if key == "NAMES":
+           for dicts in drug_master_view[rxcui]["NAMES"]:
+               drug_synonyms.write(rxcui+"|"+'|'.join(dicts.values())+"\n")
     
     ##Don't need synonyms anymore so we remove from the dictionary
-    del drug_master_view[rxcui]["SYNONYMS"]               
+    del drug_master_view[rxcui]["NAMES"]             
     hazardous_drug_products_file.write('|'.join(drug_master_view[rxcui].values())+"\n")     
         
 
