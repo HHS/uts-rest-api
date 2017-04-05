@@ -40,10 +40,12 @@ public class RetrieveAtomsTestCase {
 			//if you do not specify a source vocabulary, the script assumes you're searching for CUI
 		    String path = System.getProperty("source") == null ? "/rest/content/"+version+"/CUI/"+id+"/atoms" : "/rest/content/"+version+"/source/"+source+"/"+id+"/atoms";
 		    AtomLite[] atoms;
-		    int page=1;
+		    int page = 1;
 		    int pageCount;
+		    int numberOfAtoms = 0;
 		    //UMLS CUI may have hundreds of atoms, so we've set up a way to page through them here.
 		    do {
+		    
 		    System.out.println("Page "+page);
 		    System.out.println("***********");
 			RestAssured.baseURI = "https://uts-ws.nlm.nih.gov";
@@ -64,7 +66,7 @@ public class RetrieveAtomsTestCase {
 			Configuration config = Configuration.builder().mappingProvider(new JacksonMappingProvider()).build();
 			pageCount = JsonPath.using(config).parse(output).read("$.pageCount");
 			atoms = JsonPath.using(config).parse(output).read("$.result",AtomLite[].class);
-	    	
+			
 			for(AtomLite atom:atoms) {
 				
 			   System.out.println("AUI: "+ atom.getUi());
@@ -79,11 +81,17 @@ public class RetrieveAtomsTestCase {
 			   System.out.println("-------");
 			}
             
-            
+            numberOfAtoms += atoms.length;
             page++;
+            
             assertTrue(atoms.length > 0);
-		 
-		   } while(page <= pageCount );
+		    
+		   } 
+		    
+		    while(page <= pageCount );
+
+		    System.out.println("Retrieved " + numberOfAtoms  +" atoms for " + id);
 	}
+	
 
 }
