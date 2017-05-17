@@ -11,8 +11,10 @@ import argparse
 import collections
 import sys
 import os
-reload(sys)
-sys.setdefaultencoding('utf-8')
+
+if sys.version_info < (3, 0):
+    reload(sys)
+    sys.setdefaultencoding('utf-8')
 
 parser = argparse.ArgumentParser(description='process user given parameters')
 parser.add_argument("-k", "--apikey", required = True, dest = "apikey", help = "enter api key from your UTS Profile")
