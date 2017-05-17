@@ -4,7 +4,7 @@
 # note that computing descendants can take time, especially for terminology concepts with many descendants, closer to the tree-top of a given source vocabulary.
 ##################################################################################################################################################################
 
-
+from __future__ import print_function
 from Authentication import *
 import requests
 import json
@@ -50,22 +50,22 @@ while True:
     for result in items["result"]:
 
       try:
-        print "ui: " + result["ui"]
+        print("ui: " + result["ui"])
       except:
         NameError
       try:
-        print "uri: " + result["uri"]
+        print("uri: " + result["uri"])
       except:
         NameError
       try:
-        print "name: " + result["name"]
+        print("name: " + result["name"])
       except:
         NameError
       try:
-        print "Source Vocabulary: " + result["rootSource"]
+        print("Source Vocabulary: " + result["rootSource"])
       except:
         NameError
-      print "\n"
+      print("\n")
     pageNumber += 1
     
     if pageNumber > pageCount:
