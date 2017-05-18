@@ -26,4 +26,5 @@ To run the python clients, you'll need to have at Python version 2.7 or above in
 *   pyquery
 *   lxml
 
-
+###R
+To run R examples, the required libraries are listed in at the beginning of the script.
