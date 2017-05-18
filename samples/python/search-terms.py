@@ -5,6 +5,7 @@
 # on the /search endpoint
 #################################################################################
 
+from __future__ import print_function
 from Authentication import *
 import requests
 import json
@@ -50,19 +51,19 @@ while True:
     for result in jsonData["results"]:
         
       try:
-        print "ui: " + result["ui"]
+        print("ui: " + result["ui"])
       except:
         NameError
       try:
-        print "uri: " + result["uri"]
+        print("uri: " + result["uri"])
       except:
         NameError
       try:
-        print "name: " + result["name"]
+        print("name: " + result["name"])
       except:
         NameError
       try:
-        print "Source Vocabulary: " + result["rootSource"]
+        print("Source Vocabulary: " + result["rootSource"])
       except:
         NameError
       
