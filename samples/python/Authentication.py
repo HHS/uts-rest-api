@@ -1,10 +1,12 @@
 #!/usr/bin/python
+## 6/16/2017 - remove PyQuery dependency
 ## 5/19/2016 - update to allow for authentication based on api-key, rather than username/pw
 ## See https://documentation.uts.nlm.nih.gov/rest/authentication.html for full explanation
 
 import requests
-from pyquery import PyQuery as pq
-from lxml import etree
+#from pyquery import PyQuery as pq
+import lxml.html as lh
+from lxml.html import fromstring
 
 uri="https://utslogin.nlm.nih.gov"
 #option 1 - username/pw authentication at /cas/v1/tickets
@@ -26,10 +28,10 @@ class Authentication:
      params = {'apikey': self.apikey}
      h = {"Content-type": "application/x-www-form-urlencoded", "Accept": "text/plain", "User-Agent":"python" }
      r = requests.post(uri+auth_endpoint,data=params,headers=h)
-     d = pq(r.text)
+     response = fromstring(r.text)
      ## extract the entire URL needed from the HTML form (action attribute) returned - looks similar to https://utslogin.nlm.nih.gov/cas/v1/tickets/TGT-36471-aYqNLN2rFIJPXKzxwdTNC5ZT7z3B3cTAKfSc5ndHQcUxeaDOLN-cas
      ## we make a POST call to this URL in the getst method
-     tgt = d.find('form').attr('action')
+     tgt = response.xpath('//form/@action')[0]
      return tgt
 
    def getst(self,tgt):
