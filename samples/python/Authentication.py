@@ -8,6 +8,14 @@ import requests
 import lxml.html as lh
 from lxml.html import fromstring
 
+from cachetools import cached, TTLCache
+
+# Cache tokens for repeated calls.
+# Cache tgt for 5 hours
+tgt = TTLCache(maxsize=2, ttl=18000)
+# Cache st for 4 minutes
+st = TTLCache(maxsize=2, ttl=240)
+
 uri="https://utslogin.nlm.nih.gov"
 #option 1 - username/pw authentication at /cas/v1/tickets
 #auth_endpoint = "/cas/v1/tickets/"
@@ -23,6 +31,7 @@ class Authentication:
     self.apikey=apikey
     self.service="http://umlsks.nlm.nih.gov"
 
+   @cached(tgt) 
    def gettgt(self):
      #params = {'username': self.username,'password': self.password}
      params = {'apikey': self.apikey}
@@ -34,6 +43,7 @@ class Authentication:
      tgt = response.xpath('//form/@action')[0]
      return tgt
 
+   @cached(st) 
    def getst(self,tgt):
 
      params = {'service': self.service}
